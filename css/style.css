@@ -512,6 +512,15 @@ img {
     .left-column {
         width: 430px;
     }
+
+    .popup .price__new {
+        font-size: 20px;
+    }
+
+    .popup .price__old {
+        font-size: 15px;
+        margin-right: 5px;
+    }
 }
 
 @media screen and (max-width: 479px) {
