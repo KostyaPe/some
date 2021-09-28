@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+html {
+    position: relative;
+}
+
 body {
     background: url('../img/background.png') repeat scroll 0% 0% rgb(255, 255, 255);
     font-family: Tahoma, Verdana;
@@ -350,8 +354,12 @@ img {
 }
 
 .order__button {
-    padding: 7px;
+    margin: 0 0 15px;
+    padding: 10px;
     color: white;
+    font-weight: bold;
+    width: 100%;
+    max-width: 220px;
     font-size: 20px;
     background-color: #0d79c2;
     border: none;
@@ -359,15 +367,46 @@ img {
     transition: 0.3s background-color;
 }
 
+.form__offer-img {
+    position: relative;
+}
+
+.form__offer-img img{
+    width: 100%;
+    max-width: 250px;
+}
+
+.form__offer-img::after {
+    content: "-50%";
+    font-size: 25px;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0d79c2;
+}
+
 .order__button:hover {
     background-color: tomato;
 }
 
 .timer {
-    color: #0d79c2;
+    color: black;
     font-size: 25px;
     font-weight: bold;
-    padding: 15px 0 40px;
+    padding: 40px 0 15px;
+}
+
+.timer .minutes,
+.timer .seconds {
+    color: red;
 }
 
 .timer .hours::after {
@@ -376,10 +415,12 @@ img {
 
 .timer .minutes::after {
     content: 'минуты';
+    color: black;
 }
 
 .timer .seconds::after {
     content: 'секунды';
+    color: black;
 }
 
 .timer div {
@@ -389,13 +430,40 @@ img {
 .timer div::after {
     position: absolute;
     font-size: 12px;
-    bottom: -30px;
+    top: -30px;
     left: 50%;
     transform: translateX(-50%);
 }
 
 .timer span {
     margin: 0 15px;
+}
+
+.price {
+    font-weight: bold;
+}
+
+.price__old {
+    margin-right: 40px;
+    font-size: 18px;
+    position: relative;
+}
+
+.price__old::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 50%;
+    transform: translateY(50%);
+    background-color: tomato;
+    height: 2px;
+    width: 100%;
+    transform: rotate(-6deg);
+}
+
+.price__new {
+    font-size: 30px;
+    color: #0d79c2;
 }
 
 @media screen and (max-width: 999px) {
@@ -515,3 +583,92 @@ img {
         display: block;
     }
 }
+
+.popup {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 2;
+}
+
+.popup.active {
+    display: block;
+}
+
+.popup .form {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+}
+
+.call-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    right: 40px;
+    bottom: 40px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background-color: #0d79c2;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.call-button__pulse {
+    position: absolute;
+    z-index: -1;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 4px solid #0d79c2;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.customers-action {
+    display: none;
+    position: fixed;
+    top: 20%;
+    right: 30px;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    color: sandybrown;
+    border-radius: 10px;
+    font-size: 15px;
+    max-width: 200px;
+}
+
+.customers-action p {
+    text-align: left;
+}
+
+.customers-action.active {
+    display: block;
+}
+
+.customers-action span {
+    font-weight: bold;
+    color: white;
+}
+
+@keyframes pulse {
+    from {
+      width: 10px;
+      height: 10px;
+      opacity: 1;
+    }
+  
+    to {
+        width: 120px;
+        height: 120px;
+        opacity: 0;
+    }
+  }

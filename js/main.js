@@ -3,8 +3,9 @@
 const timer = {
     minutes: 15,
     seconds: 0,
-    m_markup: document.querySelector('.minutes'),
-    s_markup: document.querySelector('.seconds'),
+    timers_count: document.querySelectorAll('.timer'),
+    m_markup: document.querySelectorAll('.minutes'),
+    s_markup: document.querySelectorAll('.seconds'),
 }
 
 const tick = setInterval(function() {
@@ -13,10 +14,12 @@ const tick = setInterval(function() {
         timer.seconds = 59;
     }
 
-    if (timer.minutes <= 0) clearInterval(tick);
+    if (timer.minutes <= 0 && timer.seconds <= 0) clearInterval(tick);
 
-    timer.m_markup.textContent = timer.minutes < 10 ? "0" + timer.minutes : timer.minutes;
-    timer.s_markup.textContent = timer.seconds < 10 ? "0" + timer.seconds : timer.seconds;
+    for (let i = 0; i < timer.timers_count.length; i++) {
+        timer.m_markup[i].textContent = timer.minutes < 10 ? "0" + timer.minutes : timer.minutes;
+        timer.s_markup[i].textContent = timer.seconds < 10 ? "0" + timer.seconds : timer.seconds;
+    }
 
     --timer.seconds;
 }, 1000);
@@ -37,9 +40,7 @@ async function sender(name, phone, campaign_id) {
 
 // form submit
 
-const $form = document.querySelector('.form__order');
-
-$form.addEventListener('submit', function(e) {
+$('.form__order').submit(function(e) {
     e.preventDefault();
 
     const data = new FormData(this);
@@ -51,4 +52,54 @@ $form.addEventListener('submit', function(e) {
     sender(name, phone, campaign_id);
 
     window.open(url).focus();
+    window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+});
+
+// phone button
+
+const $phone = document.querySelector('.call-button');
+const $popupForm = document.querySelector('.popup');
+
+$phone.addEventListener('click', () => {
+    $('.popup').fadeIn();
+});
+
+$popupForm.addEventListener('click', function(e) {
+    if (e.target === this) $('.popup').fadeOut();
+});
+
+// customers actions popup
+
+const names = ['Богдан А.К', 'Василий П.О', 'Кирилл О.Г', 'Анастасия У.К', 'Диана А.А'];
+const price = 980;
+const $customerName = document.querySelector('.customer_name');
+const $packageCount = document.querySelector('.package_count');
+const $totalPrice = document.querySelector('.total_price');
+
+const appear = setInterval(() => {
+    const count = Math.floor(Math.random() * 5);
+
+    $('.customers-action').fadeIn();
+    $customerName.textContent = names[Math.floor(Math.random() * 5)];
+    $packageCount.textContent = (count ? count : 1) + ' шт.';
+    $totalPrice.textContent = (count ? count : 1) * price + ' руб.';
+
+    setTimeout(() => {
+        $('.customers-action').fadeOut();
+    }, 4000);
+}, 1e4);
+
+// smooth scroll
+
+$("a[href='#']").click(function() {
+    $('html, body').animate({
+        scrollTop: parseInt($(".form").offset().top)
+    }, 2000);
+  });
+
+
+// redirect on back button click
+
+$(window).on('popstate', function(event) {
+    if (!window.location.href.includes('#')) window.location.href = 'https://www.instagram.com/';
 });

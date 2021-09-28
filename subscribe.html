@@ -1,12 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Спасибо за заказ!</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            background-color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        .container {
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+            max-width: 1000px;
+            border-radius: 15px;
+            background-color: rgb(235, 235, 235);
+            box-shadow: 0px 4px 29px 0px rgba(0, 0, 0, 0.5);
+        }
+
+        .form__order {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .form__order {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .form__order input {
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .order__button,
+        .edit__button {
+            cursor: pointer;
+            margin: 0 0 15px;
+            padding: 10px;
+            color: white;
+            font-weight: bold;
+            width: 100%;
+            max-width: 220px;
+            font-size: 17px;
+            background-color: #0d79c2;
+            border: none;
+            border-radius: 10px;
+            transition: 0.3s background-color;
+        }
+
+        .edit__button {
+            display: block;
+            margin: 20px auto 0;
+            text-transform: uppercase;
+        }
+
+        .edit__button:hover {
+            background-color: tomato;
+        }
+
+        .order-info span {
+            font-weight: bold;
+        }
+
+        .order-info {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .result {
+            display: none;
+        }
+    </style>
+    <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
 </head>
+
 <body>
-    asdasdas
+    <div class="container">
+        <h1>Спасибо за заказ!</h1>
+        <div class="wrap">
+            <div class="order-info">
+                <p>Номер заказа: <span class="order_id"></span></p>
+                <p>Ваше имя: <span class="order_name"></span></p>
+                <p>Ваш телефон: <span class="order_phone"></span></p>
+            </div>
+            <form action="https://tracker.everad.com/conversion/new" method="post" class="form__order order">
+                <input type='text' name='name' placeholder='Ваше имя' />
+                <input type='text' name='phone' placeholder='Ваш телефон' />
+                <button type="submit" class="order__button">ЗАКАЗАТЬ</button>
+                <input type='hidden' name='campaign_id' value='995158' />
+                <input type='hidden' name='sid1' value='test' />
+            </form>
+            <button type="button" class="edit__button">Изменить данные</button>
+        </div>
+        <h2 class="result">Изменения успешно отправлены!</h2>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const orderId = params.get('campaign_id');
+        const orderName = params.get('name');
+        const orderPhone = params.get('phone');
+        document.querySelector('.order_id').textContent = orderId;
+        document.querySelector('input[name="name"]').value = orderName;
+        document.querySelector('.order_name').textContent = orderName;
+        document.querySelector('input[name="phone"]').value = orderPhone;
+        document.querySelector('.order_phone').textContent = orderPhone;
+
+
+        // sender
+
+        async function sender(name, phone, campaign_id) {
+            const response = await fetch('https://tracker.everad.com/conversion/new', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                mode: 'no-cors',
+                body: `name=${name}&phone=${phone}&campaign_id=${campaign_id}`
+            });
+            return response;
+        }
+
+        //order editing
+        const $editButton = document.querySelector('.edit__button');
+        let clickCount = 0;
+
+        $editButton.addEventListener('click', () => {
+            if (clickCount) {
+                clickCount = 0;
+                $('.form__order').fadeOut();
+                $editButton.textContent = 'Изменить данные';
+            } else {
+                clickCount++;
+                $('.form__order')
+                    .css("display", "flex")
+                    .hide()
+                    .fadeIn();
+
+                $editButton.textContent = 'Отменить';
+            }
+        });
+
+        // form submit
+
+        $('.form__order').submit(function (e) {
+            e.preventDefault();
+            const data = new FormData(this);
+            const name = data.get('name');
+            const phone = data.get('phone');
+            const campaign_id = data.get('campaign_id');
+
+            sender(name, phone, campaign_id);
+
+            $('.wrap').fadeOut();
+            $('.result').fadeIn();
+        });
+    </script>
 </body>
+
 </html>
