@@ -1,0 +1,677 @@
+var rpoints = [], city_list=[], rp_list=[], rp_list_by_city, footer_map, current_city_id,
+    center_lat=50.2484, center_lng=28.6861, second_step_map,
+    house_call_page_map, house_call_page_marker, lab_station_page_map,
+    home_come_map, home_come_placemark;
+var map_markers = {"footer_map": [], 'second_step_map': [], 'lab_station_page_map': []},
+    map_marker_list_by_city = {"footer_map": {}, 'second_step_map': {}, 'lab_station_page_map': {}},
+    opened_infowindow = {"footer_map": undefined, 'second_step_map': undefined, "lab_station_page_map": undefined};
+let receptionPointsWrapper = $('#reception-points-wrapper');
+let the_marker, the_infowindow;
+let indices = [];
+for(var i=0; i<window.location.pathname.length; i++) {
+    if (window.location.pathname[i] === "/")
+        indices.push(i);
+}
+let current_lang = window.location.pathname.substring(1, indices[1]);
+let current_city = _.attr("data-current-city-slug");
+let rp_map_url = '/' + current_lang + '/ajax/' + current_city + '/rp-list/';
+let map_div_class;
+if ($(".map-desktop").length > 0) {
+    map_div_class = ".map-desktop";
+} else {
+    map_div_class = ".map";
+}
+
+function show_note_address(id) {
+  rpoints.forEach(function (item) {
+    if (item.id == id) {
+        $(".description-text-comments .note").text(item.note);
+        $('#PlaceAdrModal .footer-info .note').text(item.note);
+        $("#selected-reception-point-wrapper").find('p.adress-name').html("<p><span> "+item.address+"</span></p>\n");
+    }
+  });
+}
+
+function renderReceptionPointsModal(cityId) {
+    return;
+}
+
+const getPointContent = function (point) {
+    if (point.days) {
+        let rendered_work_schedule = point.schedule.map(
+            function (point) { return point.days + " " + point.time_sampling;}
+        ).join(', ');
+
+        return '<div id="content">' +
+            '<div id="siteNotice"></div>' +
+            '<h4 id="firstHeading" class="firstHeading">' + point.name + '</h4>' +
+            '<div id="bodyContent">' +
+            '<p>Адрес: ' + point.address + '</p>' +
+            '<p>График работы: ' + rendered_work_schedule + '</p>' +
+            '</div>' +
+            '</div>';
+    }
+    return "";
+};
+
+const renderReceptionPointItem = function (point, index) {
+    return '<div class="posts_list" data-post-id="' + point.id + '">\n' +
+    '<div class="lf">\n' +
+    '<p>' + index + '.<span> ' + point.address + '</span></p>\n' +
+    '</div>\n' +
+    '</div>';
+};
+
+function footer_rp_init_selects(city_id, map_name) {
+    let $footer_list = $(map_div_class+" #footer-map-rp-list").parent().find(".nice-select .list");
+    $footer_list.find("li").not(':first').remove();
+    for (let i=0; i < rp_list_by_city[city_id].length; i++) {
+        name = rp_list_by_city[city_id][i].address;
+        $(map_div_class+" #footer-map-rp-list").append("<option value=\""+rp_list_by_city[city_id][i].id+"\">"+name+"</option>");
+        $footer_list.append("<li data-value=" + rp_list_by_city[city_id][i].id + " data-display=\"" + name + "\" class=\"option\">" + name + "</li>");
+    }
+    $(map_div_class+' .footer-map-rp-select .nice-select .current').text($('.map .footer-map-rp-select .nice-select li:first').text());
+}
+
+function lab_station_page_rp_init_selects(city_id, map_name, not_init_clicks) {
+    let $rps_wrapper = $(".all_maps_post"), $point_selector = $('#point-selector ul');
+    $rps_wrapper.find("p").remove();
+    $point_selector.find("li").remove();
+    for (let i=0; i < rp_list_by_city[city_id].length; i++) {
+        name = rp_list_by_city[city_id][i].address;
+        if (i==0)
+            $rps_wrapper.append("<p data-value=\""+ rp_list_by_city[city_id][i].id +"\" class=\"active\">"+name+"</p>");
+        else
+            $rps_wrapper.append("<p data-value=\""+ rp_list_by_city[city_id][i].id +"\" >"+name+"</p>");
+        $point_selector.append("<li data-value=\"" + rp_list_by_city[city_id][i].id + "\">" + rp_list_by_city[city_id][i].address + "</li>");
+    }
+    if (not_init_clicks) return;
+    $(document).on('click', ".all_maps_post p", function (e) {
+        current_rp_id = $(this).attr("data-value");
+        show_marker_by_rp_id(current_rp_id, "lab_station_page_map", lab_station_page_map);
+        $(".all_maps_post p").removeClass("active");
+        $(".all_maps_post p[data-value=\"" + current_rp_id + "\"]").addClass("active");
+        element = get_marker_by_rp_id(current_rp_id, "lab_station_page_map").rp;
+        if (element.schedule) {
+            $(".schedule").text(get_schedule_text(element.schedule));
+            $(".schedule-default").hide();
+            $(".schedule-title").show();
+            $(".schedule").show();
+        } else {
+            $(".schedule-default").show();
+            $(".schedule-title").hide();
+            $(".schedule").hide();
+        }
+    });
+    for (let key1 in rp_list_by_city[city_id]) {
+        mobile_select_li(rp_list_by_city[city_id][key1]['id']);
+    }
+}
+
+function show_marker_by_rp_id(rp_id, map_name, for_map) {
+    marker = get_marker_by_rp_id(rp_id, map_name);
+    the_infowindow.setContent(marker.infoWindow);
+    the_infowindow.open({
+      anchor: marker,
+      for_map,
+      shouldFocus: false,
+    });
+}
+
+function show_rp_by_id(rp_id, map_name) {
+    if (map_name == 'footer_map') {
+        $(map_div_class + ' .footer-map-rp-select .nice-select li').removeClass("selected");
+        $(map_div_class + ' .footer-map-rp-select .nice-select li[data-value="' + rp_id + '"]').addClass("selected");
+        $(map_div_class + ' .footer-map-rp-select .nice-select .current').text($(map_div_class + ' .footer-map-rp-select .nice-select li[data-value="' + rp_id + '"]').text());
+    } else if (map_name == 'lab_station_page_map') {
+        $(".all_maps_post p").removeClass("active");
+        $(".all_maps_post p[data-value=\"" + rp_id + "\"]").addClass("active");
+    }
+}
+
+function get_marker_by_rp_id(rp_id, map_name) {
+    let marker;
+    map_marker_list_by_city[map_name][current_city_id].forEach(function (element, index, array) {
+        if (element.rp.id == rp_id)
+            marker = element;
+    });
+    return marker;
+}
+
+$(document).ready(function(){
+    $(document).on('click', map_div_class+' .footer-map-city-select .nice-select li', function(e) {
+        current_city_id = $(this).data("value");
+        footer_rp_init_selects(current_city_id, "footer_map");
+        set_center_to_city(footer_map, rp_list_by_city, current_city_id)
+    });
+
+    $(document).on('click', map_div_class+' .footer-map-rp-select .nice-select li', function(e) {
+        current_rp_id = $(this).data("value");
+        show_marker_by_rp_id(current_rp_id, "footer_map", footer_map);
+    });
+});
+
+function footer_city_init_selects(city_id) {
+    if ($(".map-desktop").length > 0) {
+        $(".map-desktop #footer-map-city-list").empty();
+    } else {
+        $(".map #footer-map-city-list").not('option:first').empty();
+    }
+    let $footer_list = $(map_div_class+" #footer-map-city-list").parent().find(".nice-select .list");
+    for (let i=0; i < city_list.length; i++) {
+        $(map_div_class+" #footer-map-city-list").append("<option value=\""+city_list[i].id+"\">"+city_list[i].name+"</option>");
+        if (city_list[i].id == city_id) {
+            $footer_list.append("<li data-value=" + city_list[i].id + " data-display=" + city_list[i].name + " class=\"option selected focus\">" + city_list[i].name + "</li>");
+            $footer_list.parent().find('span.current').text(city_list[i].name);
+        }
+        else
+            $footer_list.append("<li data-value="+city_list[i].id+" data-display="+city_list[i].name+" class=\"option\">"+city_list[i].name+"</li>");
+    }
+    $(map_div_class+" #footer-map-rp-list").not('option:first').empty();
+}
+
+function get_top_infowindow(element, city_name) {
+    let infowindow_schedule_delivery = document.createElement('div'),
+        infowindow_schedule_sampling = document.createElement('div'),
+        infowindow_phone="</br>";
+    if (element.schedule) {
+        infowindow_schedule_delivery.append("</br></br>");
+        infowindow_schedule_delivery.append($(".time-delivery .info-col-1-title.info-title").text());
+        infowindow_schedule_sampling.append("</br></br>");
+        infowindow_schedule_sampling.append($(".time-sampling .info-col-1-title.info-title").text());
+    }
+    for (i in element.schedule) {
+        let col_row_delivery = document.createElement('div'), col_row_sampling = document.createElement('div');
+        let col_text = document.createElement('p'), col_text_sampling = document.createElement('p');
+        let col_text_time = document.createElement('p'), col_text_time_sampling = document.createElement('p');
+        col_row_delivery.className = "info-col-row";
+        col_text.className = "info-col-text";
+        col_text.innerHTML = element.schedule[i].days;
+        col_text_time.className = "info-col-text-time";
+        col_text_time.innerHTML = element.schedule[i].time_delivery;
+        col_row_delivery.append("</br>");
+        col_row_delivery.append(col_text);
+        col_row_delivery.append("\t");
+        col_row_delivery.append(col_text_time);
+
+        col_row_sampling.className = "info-col-row";
+        col_text_sampling.className = "info-col-text";
+        col_text_sampling.innerHTML = element.schedule[i].days;
+        col_text_time_sampling.className = "info-col-text-time";
+        col_text_time_sampling.innerHTML = element.schedule[i].time_sampling;
+        col_row_sampling.append("</br>");
+        col_row_sampling.append(col_text_sampling);
+        col_row_sampling.append("\t");
+        col_row_sampling.append(col_text_time_sampling);
+
+        infowindow_schedule_delivery.append(col_row_delivery);
+        infowindow_schedule_sampling.append(col_row_sampling);
+    }
+    if (element.phone) {
+        infowindow_phone = "<a href=\"tel: "+element.phone+"\" class=\"info-phone\">"+element.phone+"</a>";
+    }
+    return infowindow_schedule_delivery.innerText + infowindow_schedule_sampling.innerText + infowindow_phone;
+}
+
+function get_schedule_text(schedule) {
+    let schedule_text = "", schedule_length = schedule.length, j=0;
+    for (i in schedule.reverse()) {
+        schedule_text = schedule_text + schedule[i].days +
+            ": " + schedule[i].time_delivery;
+        j++;
+        if (j < schedule_length) {
+            schedule_text = schedule_text + ", ";
+        }
+    }
+    return schedule_text;
+}
+
+function get_infowindow(element, beauty_infowindow) {
+    let balloonContent = element.address;
+    if (beauty_infowindow) {
+        let $div_infowindow = $(get_pretty_marker_info(element));
+        let width = element.address.length;
+        $div_infowindow = "<div style=\"width:100%;height:"+ (50-width/2).toString() +"%;\">"+$div_infowindow.html()+"</div>";
+        balloonContent = $div_infowindow;
+    }
+    return balloonContent;
+}
+
+function create_marker(element, for_map) {
+    var marker = new google.maps.Marker({
+        position: {lat: element.location.lat, lng: element.location.lon},
+        map: for_map,
+        id: element.id
+    });
+    marker.rp = element;
+    element.marker = marker;
+    return marker;
+}
+
+function set_center_to_city(for_map, rp_list_by_city, city_id) {
+    if (rp_list_by_city[city_id].length == 1) {
+        for_map.setCenter(new google.maps.LatLng(rp_list_by_city[city_id][0].location.lat, rp_list_by_city[city_id][0].location.lon));
+        return;
+    }
+    let bounds = new google.maps.LatLngBounds();
+    rp_list_by_city[city_id].forEach(function (element, index, array) {
+        let loc = new google.maps.LatLng(element.location.lat, element.location.lon);
+        bounds.extend(loc);
+    });
+    for_map.fitBounds(bounds);
+    for_map.panToBounds(bounds);
+}
+
+function create_marker_list_by_city(city_id, city_name, for_map, map_name, beauty_infowindow) {
+    map_marker_list_by_city[map_name][city_id] = [];
+    rp_list_by_city[city_id].forEach(function (element, index, array) {
+        var marker = create_marker(element, for_map);
+        marker.infoWindow = get_infowindow(element,beauty_infowindow);
+        // Слушаем клик по метке.
+        marker.addListener("click", (e) => {
+            the_infowindow.setContent(marker.infoWindow);
+            the_infowindow.open({
+              anchor: marker,
+              for_map,
+              shouldFocus: false,
+            });
+        });
+        map_marker_list_by_city[map_name][city_id].push(marker);
+        map_markers[map_name].push(marker);
+    });
+}
+
+function show_2step_marker_info(rp) {
+    let $info_block = $(".map-block .map-popup");
+    $info_block.addClass("open");
+    $info_block.find(".info-title").text(rp.address);
+    $info_block.find(".google-map-link").attr("href", "http://maps.yandex.ru/?text="+rp.location.lat+","+rp.location.lon);
+    if (rp.phone) {
+        $info_block.find(".info-phone").text(rp.phone);
+        $info_block.find(".info-phone").attr('href', "tel:" + rp.phone);
+    }
+    $info_block.find(".time-sampling").children().remove();
+    $info_block.find(".time-sampling").text("");
+    $info_block.find(".time-sampling").append($info_block.find(".time-sampling-title").text());
+    for (var item in rp.schedule) {
+        $info_block.find(".time-sampling").append("" +
+            "<div class=\"info-col-row\">\n" +
+            " <p class=\"info-col-text\">"+rp.schedule[item].days +
+            "  "+rp.schedule[item].time_sampling+"</p>\n" +
+            "</div>");
+    }
+}
+
+function get_pretty_marker_info(rp) {
+    let $info_block = $(".block-for-map");
+    $info_block.find(".limitation").text(rp.limitation);
+    $info_block.find(".note").text(rp.note);
+    $info_block.find(".info-col-location").text(rp.address);
+    $info_block.find(".google-map-link").attr("href", "http://www.google.com/maps/place/"+rp.location.lat+","+rp.location.lon);
+    if (rp.phone) {
+        $info_block.find(".info-phone").text(rp.phone);
+        $info_block.find(".info-phone").attr('href', "tel:" + rp.phone);
+
+    }
+
+    if (rp.schedule) {
+        rp.schedule.reverse();
+        $info_block.find(".time-sampling .info-col-row").remove();
+        $info_block.find(".time-sampling .info-col-3-row").text("");
+        for (let item in rp.schedule) {
+            $info_block.find(".time-sampling .info-title").after("" +
+                "<div class=\"info-col-row\">" +
+                "<p class=\"info-col-text\">"+rp.schedule[item].days+"</p>" +
+                "<p class=\"info-col-text-time\">"+rp.schedule[item].time_sampling+"</p>" +
+                "</div>");
+        }
+        $info_block.find(".time-delivery .info-col-row").remove();
+        $info_block.find(".time-delivery .info-col-3-row").text("");
+        for (let item in rp.schedule) {
+            $info_block.find(".time-delivery .info-title").after("" +
+                "<div class=\"info-col-row\">" +
+                "<p class=\"info-col-text\">"+rp.schedule[item].days+"</p>" +
+                "<p class=\"info-col-text-time\">"+rp.schedule[item].time_delivery+"</p>" +
+                "</div>");
+        }
+    }
+    if (rp.image !== "None") {
+        $info_block.find(".image_rp").html(`<img src="${rp.image}"/>`);
+    } else {
+        $('.image_rp').children().remove();
+    }
+    return $info_block.clone();
+}
+
+function create_marker_list_in_second_step(city_id, city_name) {
+    map_marker_list_by_city["second_step_map"][current_city_id] = [];
+    rp_list_by_city[current_city_id].forEach(function (element, index, array) {
+        var marker = create_marker(element, second_step_map);
+        marker.infoWindow = get_infowindow(element, false);
+        marker.addListener("click", (e) => {
+            let thisMarker = e.get('target');
+            show_2step_marker_info(thisMarker.rp);
+            $("#id_reception_point li[data-value="+marker.rp.id+"]").click();
+            $('#reception-points-wrapper .posts_list').removeClass("current");
+            $("#reception-points-wrapper .posts_list[data-post-id="+marker.rp.id+"]").addClass("current");
+            the_infowindow.setContent(marker.infoWindow);
+            the_infowindow.open({
+              anchor: marker,
+              second_step_map,
+              shouldFocus: false,
+            });
+        });
+
+        map_marker_list_by_city["second_step_map"][current_city_id].push(marker);
+        map_markers["second_step_map"].push(marker);
+    });
+    $('#reception-points-wrapper .posts_list').on("click", function (e) {
+        $('#reception-points-wrapper .posts_list').removeClass("current");
+        $(this).addClass("current");
+        let id = $(this).attr("data-post-id");
+        map_markers["second_step_map"].forEach(function (element, index, array) {
+            if (element.rp.id == Number(id)) {
+                show_2step_marker_info(element.rp);
+                the_infowindow.setContent(element.infoWindow);
+                the_infowindow.open({
+                  anchor: element,
+                  second_step_map,
+                  shouldFocus: false,
+                });
+                $("#id_reception_point li[data-value="+element.rp.id+"]").click();
+            }
+        });
+    });
+    second_step_map.setZoom(10);
+}
+
+function delete_marker_by_id(rp_id, map_name) {
+    for (let i=0; i < map_markers[map_name].length; i++) {
+        if (map_markers[map_name][i].id == rp_id)
+            map_markers[map_name][i].setMap(null);
+    }
+}
+
+function ajax(options) {
+  return new Promise(function(resolve, reject) {
+    $.ajax(options).done(resolve).fail(reject);
+  });
+}
+
+function ajax_get_rp_list() {
+    return ajax({
+        url: rp_map_url,
+        method: 'GET',
+        dataType: 'JSON'
+    }).then(function(response) {
+        current_city_id = response.current_city_id;
+        city_list = response.city_list;
+        var city_copy = [];
+        city_copy.push(
+        city_list[9], city_list[0], city_list[8],  city_list[6], city_list[5],
+        city_list[7], city_list[1], city_list[12], city_list[3], city_list[13], city_list[4],
+        city_list[10],city_list[2], city_list[11]);
+        city_list = city_copy;
+        rp_list_by_city = response.rp_list_by_city;
+        for (var key in rp_list_by_city){
+            for (let i in rp_list_by_city[key]) {
+                rp_list.push(rp_list_by_city[key][i]);
+            }
+        }
+        center_lat = rp_list[0].location.lat;
+        center_lng = rp_list[0].location.lon;
+        return new Promise(function(resolve) {
+            resolve([center_lat, center_lng]);
+        });
+    });
+}
+
+function rp_in_second_step_map() {
+    rp_list_by_city[current_city_id].forEach(function (element, index, array) {
+        $("#reception-points-wrapper").append(
+            "<div class=\"posts_list\" data-post-id=\""+element.id+"\">\n" +
+            "<div class=\"lf\">\n" +
+            "<p>"+(index+1)+".<span> "+element.address+"</span></p>\n" +
+            "</div>\n</div>"
+        );
+    });
+}
+
+function init_second_step_map() {
+    // for second_step_map
+    rp_in_second_step_map();
+    create_marker_list_in_second_step(city_list[current_city_id].id, city_list[current_city_id].name);
+    // set_center_to_city(second_step_map, rp_list_by_city, current_city_id)
+}
+
+function init_main_page_footer_map() {
+    footer_city_init_selects(current_city_id);
+    for (let i=0; i < city_list.length; i++) {
+        create_marker_list_by_city(city_list[i].id, city_list[i].name, footer_map, "footer_map", true);
+    }
+    footer_rp_init_selects(current_city_id, "footer_map");
+}
+
+function home_come_map_2step() {
+    // для вызова на дом
+    home_come_placemark = createPlacemark([center_lat, center_lng ]);
+    home_come_map.geoObjects.add(home_come_placemark);
+    // Слушаем клик на карте.
+    home_come_map.events.add('click', function (e) {
+        var coords = e.get('coords');
+        // передвигаем метку.
+        home_come_placemark.geometry.setCoordinates(coords);
+        var latitude = $('#id_home_come_lat');
+        var longtitude = $('#id_home_come_lng');
+        latitude.val(coords[0]);
+        longtitude.val(coords[1]);
+    });
+}
+
+// Создание метки.
+function createPlacemark(coords) {
+    return new ymaps.Placemark(coords, {
+        iconCaption: 'Адрес для вызова на дом'
+    }, {
+        preset: 'islands#violetDotIconWithCaption',
+        draggable: true
+    });
+}
+
+function init_house_call_page_map() {
+    // house_call_page_map = new ymaps.Map("map_house_call", {
+    //     center: [center_lat, center_lng],
+    //     zoom: 12
+    // }, {
+    //     searchControlProvider: 'yandex#search'
+    // });
+    house_call_page_map = new google.maps.Map(document.getElementById('map_house_call'), {
+        center: {
+            lat: center_lat,
+            lng: center_lng
+        },
+        zoom: 10
+    });
+
+    house_call_page_marker = createPlacemark([center_lat, center_lng]);
+    house_call_page_map.geoObjects.add(house_call_page_marker);
+    // Слушаем клик на карте.
+    house_call_page_map.events.add('click', function (e) {
+        var coords = e.get('coords');
+        // передвигаем метку.
+        house_call_page_marker.geometry.setCoordinates(coords);
+        var latitude = $('#id_lat');
+        var longtitude = $('#id_lng');
+        latitude.val(coords[0]);
+        longtitude.val(coords[1]);
+        house_call_page_marker.properties.set('iconCaption', 'Ваш адрес');
+        // getAddress(coords[0].toString().slice(0, 8), coords[1].toString().slice(0, 8));
+    });
+
+    // Создание метки.
+    function createPlacemark(coords) {
+        return new ymaps.Placemark(coords, {
+            iconCaption: 'Адрес'
+        }, {
+            preset: 'islands#violetDotIconWithCaption',
+            draggable: true
+        });
+    }
+
+    // Определяем адрес по координатам (обратное геокодирование).
+    function getAddress(coords) {
+        house_call_page_marker.properties.set('iconCaption');
+        ymaps.geocode(coords).then(function (res) {
+            var firstGeoObject = res.geoObjects.get(0);
+            house_call_page_marker.properties
+                .set({
+                    // Формируем строку с данными об объекте.
+                    iconCaption: [
+                        // Название населенного пункта или вышестоящее административно-территориальное образование.
+                        firstGeoObject.getLocalities().length ? firstGeoObject.getLocalities() : firstGeoObject.getAdministrativeAreas(),
+                        // Получаем путь до топонима, если метод вернул null, запрашиваем наименование здания.
+                        firstGeoObject.getThoroughfare() || firstGeoObject.getPremise()
+                    ].filter(Boolean).join(', '),
+                    // В качестве контента балуна задаем строку с адресом объекта.
+                    balloonContent: firstGeoObject.getAddressLine()
+
+                });
+            $("#id_address").val(firstGeoObject.getAddressLine());
+        });
+    }
+}
+
+const applyReceptionPointsClick = function () {
+
+    $(receptionPointsWrapper).find('.posts_list').each(function (i, obj) {
+        $(obj).unbind('click').bind('click', function (e) {
+            e.preventDefault();
+            let selectedWrapper = $('#selected-reception-point-wrapper');
+
+            let id = $(obj).data('post-id');
+            active_position(id, marker_list, map);
+
+            selectedWrapper.find('p.adress-name').html($(obj).find('p').html());
+
+            let applySelectedPointButton = selectedWrapper.find('button[type=submit]');
+            applySelectedPointButton.attr('data-reception-point-id', id);
+
+            applySelectedReceptionPoint(applySelectedPointButton);
+            for (let i=0; i<rpoints.length; i++) {
+                if (rpoints[i].id == id) {
+                    the_marker.setPosition( new google.maps.LatLng(rpoints[i].lat, rpoints[i].lng) );
+                    map.panTo( new google.maps.LatLng( rpoints[i].lat, rpoints[i].lng ) );
+                }
+            }
+        })
+    });
+};
+
+const applySelectedReceptionPoint = function (button) {
+    $(button).unbind('click').bind('click', function (e) {
+        e.preventDefault();
+        $('#id_reception_point').find('li[data-value="' + $(button).attr('data-reception-point-id') + '"]').click();
+        $('#PlaceAdrModal').modal('hide');
+    });
+};
+
+function init_lab_station_page_map() {
+    let test_info_block = $(".map-block>.container").clone();  // чтобы был сверху карты
+    $(".map-block>.container").remove();  // чтобы был сверху карты
+    lab_station_page_map = new google.maps.Map(document.getElementById('map_lab_station'), {
+        center: {
+            lat: center_lat,
+            lng: center_lng
+        },
+        zoom: 10
+    });
+    $(".map-block").append(test_info_block);  // чтобы был сверху карты
+
+    lab_station_page_rp_init_selects(current_city_id, "lab_station_page_map", false);
+    for (let i=0; i < city_list.length; i++) {
+        create_marker_list_by_city(city_list[i].id, city_list[i].name, lab_station_page_map, "lab_station_page_map", true);
+        rp_list_by_city[city_list[i].id].forEach(function (element, index, array) {
+            element.marker.addListener("click", (e) => {
+                if (element.schedule) {
+                    $(".schedule").text(get_schedule_text(element.schedule.reverse()));
+                    $(".schedule-default").hide();
+                    $(".schedule-title").show();
+                    $(".schedule").show();
+                } else {
+                    $(".schedule-default").show();
+                    $(".schedule-title").hide();
+                    $(".schedule").hide();
+                }
+            });
+        });
+    }
+    set_center_to_city(lab_station_page_map, rp_list_by_city, current_city_id);
+
+    $("#city-selector .drop-menu li").on('click', function (e) {
+        current_city_id = $(this).attr('data-value');
+        the_infowindow.close();
+        set_center_to_city(lab_station_page_map, rp_list_by_city, current_city_id);
+        lab_station_page_rp_init_selects($(this).attr('data-value'), "lab_station_page_map", true);
+        $('#point-selector .ae-select-content').text("Ничего не выбрано");
+    });
+    $(document).on('click', "#point-selector ul li", function (e) {
+        current_rp_id = $(this).attr("data-value");
+        show_marker_by_rp_id(current_rp_id, "lab_station_page_map", lab_station_page_map);
+        $("#point-selector .ae-select-content").text($(this).text());
+        element = get_marker_by_rp_id(current_rp_id, "lab_station_page_map").rp;
+        if (element.schedule) {
+            $(".schedule").text(get_schedule_text(element.schedule).reverse());
+            $(".schedule-default").hide();
+            $(".schedule-title").show();
+            $(".schedule").show();
+        } else {
+            $(".schedule-default").show();
+            $(".schedule-title").hide();
+            $(".schedule").hide();
+        }
+    });
+    $('#point-selector .ae-select-content').text("Ничего не выбрано");
+}
+
+function initMap() {
+    the_infowindow = new google.maps.InfoWindow();
+    if (window.location.pathname.indexOf("rec-points-map") > -1)
+        ajax_get_rp_list().then(function (result) {
+            init_lab_station_page_map();
+        });
+    else if (window.location.pathname.indexOf("house-call") > -1) {
+        ajax_get_rp_list().then(function (result) {
+            init_house_call_page_map();
+        });
+    }
+    else {
+        ajax_get_rp_list().then(function(result) {
+            if (document.getElementById('footer-map')) {
+                footer_map = new google.maps.Map(document.getElementById('footer-map'), {
+                    center: {
+                        lat: center_lat,
+                        lng: center_lng
+                    },
+                    zoom: 10
+                });
+                init_main_page_footer_map();
+            }
+            // home_come_map = new google.maps.Map(document.getElementById('home_come_map'), {
+            //     center: {
+            //         lat: center_lat,
+            //         lng: center_lng
+            //     },
+            //     zoom: 10
+            // });
+            second_step_map = new google.maps.Map(document.getElementById('map'), {
+                center: {
+                    lat: center_lat,
+                    lng: center_lng
+                },
+                zoom: 10
+            });
+            init_second_step_map();
+            // home_come_map_2step();
+        });
+    }
+}

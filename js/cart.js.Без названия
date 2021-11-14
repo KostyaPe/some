@@ -1,0 +1,499 @@
+var cart = new Object({
+  count: 0,
+  count_text: '',
+  sum: 0,
+  currency: '',
+  lang: '',
+  all_ids: [],
+  service_ids: [],
+  packet_ids: [],
+  add_service_ids: [],
+  service_and_packet_list: [],
+  add_service_list: [],
+  home_come_sr: undefined,
+  service_yg: undefined,
+  ajaxAndUpdate: function (link, method) {
+    if (!method) method = 'post'
+    ajax({
+      url: link,
+      method: method,
+      dataType: 'JSON',
+    }).then(function (data) {
+      if (data.cart_full_info) cart.updateCartContent(data.cart_full_info)
+      else cart.updateCartContent(data)
+      cart.updateHeader()
+      cart.update3rdStep()
+    })
+  },
+  addServiceAjax: function (link, service_region_id, service_id) {
+    cart.ajaxAndUpdate(link, 'get')
+  },
+  deleteServiceAjax: function (link, service_region_id, service_id) {
+    cart.ajaxAndUpdate(link, 'get')
+  },
+  clear: function () {
+    this.count = 0
+    this.sum = 0
+    this.all_ids = []
+    this.service_ids = []
+    this.packet_ids = []
+    this.add_service_ids = []
+    this.service_and_packet_list = []
+    this.add_service_list = []
+    this.service_yg = false
+  },
+  addHomeCome: function (link) {
+    cart.ajaxAndUpdate(link, 'get')
+  },
+  deleteHomeCome: function (link) {
+    cart.ajaxAndUpdate(link, 'get')
+  },
+  updateCartContent: function (data) {
+    this.count_text = ' ' + data.count_text
+    this.count = data.count
+    this.sum = data.sum
+    this.all_ids = data.all_ids
+    this.service_ids = data.service_ids
+    this.packet_ids = data.packet_ids
+    this.add_service_ids = data.add_service_ids
+    this.service_and_packet_list = data.service_and_packet_list
+    this.add_service_list = data.add_service_list
+    this.sum_without_discount = data.sum_without_discount
+    this.discount_percent = data.discount_percent
+    this.discount_sum = data.discount_sum
+    this.home_come_sr = data.home_come
+    this.service_yg = data.service_yg
+  },
+  getCartInfoAjax: function (link) {
+    cart.ajaxAndUpdate(link, 'get')
+  },
+  clearAjax: function (link) {
+    $.ajax({
+      url: link,
+      method: 'GET',
+      success: function (data) {
+        cart.clear()
+        cart.cleanHeader()
+        Array.from(document.querySelectorAll('.result__icon--checked'))
+          .concat(
+            Array.from(
+              document.querySelectorAll('.complex-research-remove_service_btn')
+            )
+          )
+          .map((el) => el.click())
+        // Array.from(document.querySelectorAll('.complex-research-remove_service_btn')).map(el => el.click());
+        $('.results__item img.delete-from-cart-checkbox').each(function () {
+          changeResultItemIconForDelete($(this))
+        })
+      },
+      error: function () {},
+    })
+  },
+  updateHeader: function () {
+    $('.cart-count-text').text(this.count_text)
+    $('.cart-count').text(this.count)
+    $('.cart-sum').text(this.sum_without_discount + ' ' + cart.currency)
+    $('.basket__list').children().remove()
+    $('#selected_services').children().remove()
+    $('#id_order_text').val('')
+    if (window.location.href.includes('/house-call/') === true) {
+      $('.house-call-basket .basket__total .cart-sum').text(
+        Number(this.sum_without_discount) +
+          Number(
+            $('.house-call-basket .required_item .price span')[0].textContent
+          ) +
+          ' ' +
+          cart.currency
+      )
+    }
+    this.service_and_packet_list.forEach(function (value, index, array) {
+      $('.basket__list').prepend(
+        '' +
+          '<a class="basket__item" data-service-id="' +
+          value.service_id +
+          '">\n' +
+          '  <p class="name open-research-detail" data-service-id="' +
+          value.service_id +
+          '" data-sr-id=\'' +
+          value.id +
+          '\' data-toggle="modal" data-target="#PackageModal">' +
+          value.name +
+          '</p>\n' +
+          '  <p class="price">' +
+          value.price +
+          ' ' +
+          cart.currency +
+          '</p>\n' +
+          '  <img class="delete-from-cart-checkbox" src="' +
+          cart.static_url +
+          'intelmed/desktop/img/icons/deleteItem.svg" alt="" data-confirmed-for-delete=false />\n' +
+          '</a>'
+      )
+    })
+    this.service_and_packet_list.forEach(function (value, index, array) {
+      $('#selected_services').prepend(
+        '' +
+          '<a class="basket__item" data-service-id="' +
+          value.service_id +
+          '">\n' +
+          '  <p class="name open-research-detail" data-service-id="' +
+          value.service_id +
+          '" data-sr-id=\'' +
+          value.id +
+          '\' data-toggle="modal" data-target="#PackageModal">' +
+          value.name +
+          '</p>\n' +
+          '  <p class="price">' +
+          value.price +
+          ' ' +
+          cart.currency +
+          '</p>\n' +
+          '  <img class="delete-from-cart-checkbox" src="' +
+          cart.static_url +
+          'intelmed/desktop/img/icons/deleteItem.svg" alt="" data-confirmed-for-delete=false />\n' +
+          '</a>'
+      )
+    })
+    this.service_and_packet_list.map((el) => {
+      if (window.location.href.includes('/house-call/') === true) {
+        let HouseCallAnalyzesTextArea = document.querySelector('#id_order_text')
+        HouseCallAnalyzesTextArea.value += `- ${el.name} \n`
+      }
+    })
+    let HeaderTopBasketHouseCallBtn = $(
+      '.header__top--right .basket__total__house-call'
+    )
+    let HeaderMidBasketHouseCallBtn = $(
+      '.header__mid .basket__total__house-call'
+    )
+    let CitiesForHouseCalls = ['kiev']
+    if (
+      this.service_yg === false &&
+      CitiesForHouseCalls.includes(window.location.pathname.split('/')[2]) !==
+        true
+    ) {
+      HeaderTopBasketHouseCallBtn.css('display', 'flex')
+      HeaderMidBasketHouseCallBtn.css('display', 'flex')
+    } else if (
+      this.service_yg === true &&
+      CitiesForHouseCalls.includes(window.location.pathname.split('/')[2]) !==
+        true
+    ) {
+      HeaderTopBasketHouseCallBtn.css('display', 'none')
+      HeaderMidBasketHouseCallBtn.css('display', 'none')
+    } else {
+      HeaderTopBasketHouseCallBtn.css('display', 'none')
+      HeaderMidBasketHouseCallBtn.css('display', 'none')
+    }
+    this.add_service_list.forEach(function (value, index, array) {
+      $('.basket__list').append(
+        '' +
+          '<a class="basket__item" data-service-id="' +
+          value.service_id +
+          '">\n' +
+          '  <p class="name">' +
+          value.name +
+          '</p>\n' +
+          '  <p class="price">' +
+          value.price +
+          ' ' +
+          cart.currency +
+          '</p>\n' +
+          '  <img src="' +
+          cart.static_url +
+          'intelmed/desktop/img/icons/deleteItemGrey.svg" alt=""/>\n' +
+          '</a>'
+      )
+      $('#selected_services').append(
+        '' +
+          '<a class="basket__item" data-service-id="' +
+          value.service_id +
+          '">\n' +
+          '  <p class="name">' +
+          value.name +
+          '</p>\n' +
+          '  <p class="price">' +
+          value.price +
+          ' ' +
+          cart.currency +
+          '</p>\n' +
+          '  <img src="' +
+          cart.static_url +
+          'intelmed/desktop/img/icons/deleteItemGrey.svg" alt=""/>\n' +
+          '</a>'
+      )
+    })
+    if ($('.come-home-switcher').length > 0)
+      if (cart.home_come_sr) {
+        $('.come-home-switcher').attr('checked', 'checked')
+      } else {
+        $('.come-home-switcher').attr('checked', false)
+      }
+  },
+  cleanHeader: function () {
+    $('.cart-count').text(0)
+    $('.cart-sum').text(0 + ' ' + cart.currency)
+    $('#cart-content').children().remove()
+    $('#selected_services').children().remove()
+    if (window.location.href.includes('/house-call/') === true) {
+      $('.house-call-basket .basket__total .cart-sum').text(
+        Number(
+          $('.house-call-basket .required_item .price span')[0].textContent
+        ) +
+          ' ' +
+          cart.currency
+      )
+    }
+  },
+  update3rdStep: function () {
+    let $order3rdStepCartContent = $('#create-order-cart-content-3-step')
+    $order3rdStepCartContent.empty()
+    this.service_and_packet_list.forEach(function (value, index, array) {
+      $order3rdStepCartContent.prepend(
+        '' +
+          '<li>' +
+          '<p>' +
+          value.name +
+          '</p>' +
+          '<span>' +
+          value.price +
+          ' ' +
+          cart.currency +
+          '</span>' +
+          '</li>'
+      )
+    })
+    this.add_service_list.forEach(function (value, index, array) {
+      $order3rdStepCartContent.append(
+        '' +
+          '<li>' +
+          '<p>' +
+          value.name +
+          '</p>' +
+          '<span>' +
+          value.price +
+          ' ' +
+          cart.currency +
+          '</span>' +
+          '</li>'
+      )
+    })
+    if (cart.home_come_sr) {
+      $order3rdStepCartContent.append(
+        '' +
+          '<li>' +
+          '<p>' +
+          cart.home_come_sr.name +
+          '</p>' +
+          '<span>' +
+          cart.home_come_sr.price +
+          ' ' +
+          cart.currency +
+          '</span>' +
+          '</li>'
+      )
+    }
+    $('#order-3rd-step-sub-total-block').text(
+      cart.sum_without_discount + ' ' + cart.currency
+    )
+    $('#order-3rd-step-final-block').text(cart.sum + ' ' + cart.currency)
+    $('#create-order-basket-count-3-step').text(cart.count)
+    if (cart.discount_percent > 0) {
+      $('#order-3rd-step-discount-percent').text(cart.discount_percent)
+      $('#order-3rd-step-discount-block').text(
+        cart.discount_sum + ' ' + cart.currency
+      )
+    }
+  },
+})
+
+function ajax(options) {
+  return new Promise(function (resolve, reject) {
+    $.ajax(options).done(resolve).fail(reject)
+  })
+}
+
+// for result__list
+function changeResultItemIconForAdd($elem) {
+  $elem
+    .find('img')
+    .attr('src', cart.static_url + 'intelmed/desktop/img/icons/deleteItem.svg')
+  $elem.removeClass('add-to-basket-checkbox')
+  $elem.addClass('delete-from-cart-checkbox')
+  // $elem.find('img').attr('data-confirmed-for-delete', false)
+}
+function changeResultItemIconForDelete($result_elem) {
+  $result_elem.find('img').attr(
+    'src',
+    cart.static_url + 'intelmed/desktop/img/icons/search-basket.svg'
+  )
+  $result_elem.removeClass('delete-from-cart-checkbox')
+  $result_elem.addClass('add-to-basket-checkbox')
+  // $result_elem.parent().attr('data-confirmed-for-delete', false)
+}
+
+$(document).on('click', '.delete-from-cart-checkbox', function (e) {
+  e.preventDefault()
+  let $parent, $result_elem, name, service_id, service_region_id
+  let confirmed_for_delete = $(this).attr('data-confirmed-for-delete')
+
+  if ($(this).parents('.results__item').length > 0) {
+    $parent = $(this).parents('.results__item')
+    service_id = $parent.find('.open-research-detail').attr('data-service-id')
+    service_region_id = $parent.find('.open-research-detail').attr('data-sr-id')
+  } else {
+    $parent = $(this).parents('.basket__item')
+    service_id = $parent.find('.open-research-detail').attr('data-service-id')
+    service_region_id = $parent.find('.open-research-detail').attr('data-sr-id')
+  }
+  $result_elem = $(
+    ".results__item .delete-from-cart-checkbox[data-id='" + service_id + "']"
+  )
+  name = $parent.find('.name').text()
+  let delete_from_cart_link =
+    '/' + cart.lang + '/cart/delete/' + service_region_id
+  // let delete_from_cart_link = "/cart/delete/"+service_region_id;
+
+  if (confirmed_for_delete != true) {
+    let title = 'Подтвердите действие',
+      service = 'Услуга',
+      deleted = 'удалена',
+      delete_service = 'Удалить услугу',
+      from_cart = 'с корзины',
+      delete_str = 'Удалить',
+      cancel = 'Отмена'
+    if (_.attr('data-language-code') === 'uk') {
+      service = 'Послуга'
+      title = 'Підтвердіть дію'
+      deleted = 'вилучена'
+      delete_service = 'Видалити послугу'
+      from_cart = 'з кошика'
+      delete_str = 'Видалити'
+      cancel = 'Відміна'
+    }
+    Swal.fire({
+      title: title,
+      text: delete_service + ' "' + name + '" ' + from_cart + '?',
+      icon: 'warning',
+      iconColor: '#ed1d25',
+      showCancelButton: true,
+      confirmButtonColor: '#ed1d25',
+      cancelButtonColor: 'rgb(173 173 173)',
+      confirmButtonText: delete_str,
+      cancelButtonText: cancel,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        cart.deleteServiceAjax(
+          delete_from_cart_link,
+          service_region_id,
+          service_id
+        )
+        if ($result_elem) {
+          changeResultItemIconForDelete($result_elem)
+        }
+        Array.from(document.querySelectorAll('.result__icon'))
+          .concat(
+            Array.from(
+              document.querySelectorAll('.complex-research-remove_service_btn')
+            )
+          )
+          .map((el) => {
+            if (el.getAttribute('data-id') == service_id) {
+              el.click()
+            }
+          })
+        Swal.fire({
+          icon: 'success',
+          title: _.attr('data-language-code') === 'uk' ? 'Вилучено' : 'Удалено',
+          text: service + ' "' + name + '" ' + deleted + ' ' + from_cart,
+          confirmButtonColor: '#ed1d25',
+        })
+      }
+    })
+  }
+})
+
+$(document).on('click', '.open-research-detail', function (e) {
+  e.preventDefault()
+  let link =
+    '/' + cart.lang + '/ajax/service/' + $(this).attr('data-service-id')
+  open_research_detail(link)
+})
+
+function initCart() {
+  cart.currency = _.attr('currency_symbol')
+  cart.static_url = _.attr('data-static-url')
+  cart.lang = _.attr('data-language-code')
+  cart.getCartInfoAjax(_.attr('data-get-full-info-url'))
+}
+
+$('.clear-cart').on('click', function (e) {
+  cart.clearAjax(_.attr('data-cart-clear'))
+  $('.basket__list').empty()
+})
+
+// add from search result__list
+$(document).on('click', '.add-to-basket-checkbox', function (e) {
+  e.preventDefault()
+  let service_id = $(this).attr('data-id'),
+    service_region_id = $(this).attr('data-sr-id')
+  let add_to_cart_link = '/' + cart.lang + '/cart/add/' + service_region_id
+  // let add_to_cart_link = "/cart/add/"+service_region_id;
+  cart.addServiceAjax(add_to_cart_link, service_region_id, service_id)
+  changeResultItemIconForAdd($(this))
+})
+
+// add from complex-research modal
+$(document).on('click', '.complex-research-add_service_btn', function (e) {
+  let service_id = $(this).attr('data-id'),
+    service_region_id = $(this).attr('data-sr-id')
+  let add_to_cart_link = '/' + cart.lang + '/cart/add/' + service_region_id
+  // let add_to_cart_link = "/cart/add/"+service_region_id;
+  cart.addServiceAjax(add_to_cart_link, service_region_id, service_id)
+  let footAddBtns = $('.foot_add-btns')
+  $(this)
+    .removeClass('complex-research-add_service_btn')
+    .addClass(['complex-research-remove_service_btn', 'added'])
+  changeResultItemIconForAdd(
+    $(`.add-to-basket-checkbox[data-id=${service_id}]`)
+  )
+  $(this).text('Добавлено')
+  !footAddBtns.hasClass('animate__animated') &&
+    footAddBtns.addClass(['d-flex', 'animate__animated', 'animate__fadeIn'])
+  footAddBtns.hasClass('d-none') && footAddBtns.removeClass('d-none')
+})
+
+// удаление из корзины
+$(document).on('click', '.complex-research-remove_service_btn', function (e) {
+  e.preventDefault()
+  let service_id = $(this).attr('data-id'),
+    service_region_id = $(this).attr('data-sr-id')
+  let delete_from_cart_link =
+    '/' + cart.lang + '/cart/delete/' + service_region_id
+  cart.deleteServiceAjax(delete_from_cart_link, service_region_id, service_id)
+  changeResultItemIconForDelete(
+    $(`.delete-from-cart-checkbox[data-id=${service_id}]`)
+  )
+  $(this)
+    .removeClass(['complex-research-remove_service_btn', 'added'])
+    .addClass('complex-research-add_service_btn')
+  $(this).text('Добавить')
+})
+
+// home-come checkbox
+$(document).on('click', '.come-home-switcher', function (e) {
+  if ($(this).prop('checked')) {
+    cart.addHomeCome('/' + cart.lang + '/cart/add-home-come/')
+    // cart.addHomeCome("/cart/add-home-come/");
+  } else {
+    cart.deleteHomeCome('/' + cart.lang + '/cart/delete-home-come/')
+    // cart.deleteHomeCome("/cart/delete-home-come/");
+  }
+})
+
+$(document).on('click', '.go-to-order', function () {
+  $('.search__clear').click()
+  $('.basket__total__pay').click()
+})
+
+initCart()

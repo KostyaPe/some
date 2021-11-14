@@ -1,0 +1,1207 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-undef */
+// todo
+// метод должен принимать ошибки формы в формате json
+// пробежаться по элементам формы, если ключ инпута совпадает с ключом ошибки,
+// отобразить все ошибки к этому инпуту
+function handleFormErrors(formErrors, form) {}
+var searchTimer = null
+var _ = $('#js-helper')
+var blackPreloaderHtml =
+  '<div class="preloader-wrapper-black"><div class="preloader-black"><img src="' +
+  _.attr('preloader-url') +
+  '"> </div></div>'
+
+function startPreloader() {
+  setTimeout(function () {
+    $('body').addClass('preloader-site')
+  }, 1000)
+}
+
+function stopPreloader() {
+  $('.preloader-wrapper').fadeOut()
+  $('body').removeClass('preloader-site')
+}
+
+function startPreloaderBlack() {
+  var Body = $('body')
+  Body.append(blackPreloaderHtml)
+  Body.addClass('preloader-site-black')
+}
+
+function stopPreloaderBlack() {
+  $('.preloader-wrapper-black').fadeOut()
+  $('body').removeClass('preloader-site-black')
+  $('.preloader-wrapper-black').remove()
+}
+
+$(document).ready(function () {
+  stopPreloaderBlack()
+  stopPreloader()
+})
+
+$('.success-login-image, .login-down-arrow').on('click', function () {
+  $('.success-login-controls').toggle()
+})
+
+$('.password-icon').click(function () {
+  $(this).toggleClass('hide-password-icon')
+  var input = $('.password-input')
+  if (input.attr('type') === 'password') {
+    input.attr('type', 'text')
+  } else {
+    input.attr('type', 'password')
+  }
+})
+
+$('.tel-arrow-down').on('click', function () {
+  $('.tel-list').toggle()
+})
+
+$('.toggle-tel-list').on('click', function () {
+  $('.tel-list').toggle()
+})
+
+$('.all-category').on('click', function () {
+  // $('.all-category-dd').toggle('slide', {direction: 'left'}, 300);
+  if (
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    )
+  ) {
+    $('.all-category-dd').toggle('slide', { direction: 'left' }, 200)
+  } else {
+    $('.all-category-dd').toggle(300)
+  }
+})
+
+$(function () {
+  var tabs = function () {
+    $('.all-list').hide()
+    $('.all-list:first').show()
+    $('.analyzes-list-item:first').addClass('active')
+
+    $('.analyzes-list-item').on('click', function (event) {
+      event.preventDefault()
+      $('.analyzes-list-item').removeClass('active')
+      $(this).addClass('active')
+      $('.all-list').hide()
+
+      var selectContent = $(this).find('a').attr('href')
+      $(selectContent).fadeIn()
+    })
+  }
+  tabs()
+})
+
+$('#file-upload').change(function () {
+  const filepath = this.value
+  const m = filepath.match(/([^/\\]+)$/)
+  const filename = m[1]
+  $('.file-name').html(filename)
+})
+
+function getCookie(name) {
+  var matches = document.cookie.match(
+    new RegExp(
+      '(?:^|; )' + name.replace(/([.$?*|{}()[]\\\/\+^])/g, '\\$1') + '=([^;]*)'
+    )
+  )
+  return matches ? decodeURIComponent(matches[1]) : null
+}
+
+$.fn.hasAttr = function (value) {
+  return this.attr(value) !== undefined
+}
+
+var pregnancyContainer = $('#pregnancy-container')
+var menstruationContainer = $('#menstruation_date-container')
+
+var aRestorePassword = $('#restore-password-a')
+
+var payCard = $('#pay-with-card-button')
+var payCash = $('#pay-with-cash-button')
+var payBonus = $('#pay-with-bonus-button')
+
+var isAnalyzesAndCost =
+  _.attr('show-all-services-in-search') &&
+  _.attr('show-all-services-in-search') === 'true'
+
+$(document).ready(function () {
+  const abstractLoginForm = $('#abstract-login-form')
+  const abstractGetResultForm = $('#get-result-form')
+  const abstractRegisterForm = $('#abstract-register-form')
+  const abstractEditProfileForm = $('#abstract-edit-profile-form')
+  const abstractRestorePasswordForm = $('#abstract-restore-password-form')
+  const feedbackForm = $('#feedback_form')
+
+  $('.search form').on('submit', function (e) {
+    e.preventDefault()
+  })
+
+  aRestorePassword.on('click', function (e) {
+    e.preventDefault()
+    $('#loginModal').modal('hide')
+    $('#RestorePasswordModal').modal('show')
+  })
+
+  let passwordConfirmInput = document.querySelector(
+    '#id_password_signin_confirm'
+  )
+  let passwordInput = document.querySelector('#id_password_signin')
+  let passwordConfirmText = document.querySelector('#password-confirm-text')
+
+  const CheckPasswordValid = () => {
+    passwordConfirmText.style.display = 'inline'
+    if (passwordInput.value === '') {
+      passwordConfirmText.textContent = 'Введите пароль'
+    } else if (passwordConfirmInput.value === passwordInput.value) {
+      passwordConfirmText.style.color = 'green'
+      passwordConfirmText.textContent = 'Пароли совпадают'
+    } else {
+      passwordConfirmText.style.color = 'red'
+      passwordConfirmText.textContent = 'Пароли не совпадают'
+    }
+  }
+
+  passwordInput.addEventListener('keyup', CheckPasswordValid)
+  passwordConfirmInput.addEventListener('keyup', CheckPasswordValid)
+
+  abstractRegisterForm.on('submit', function (e) {
+    // if (_.attr("data-project-type") != "invivo") {
+    e.preventDefault()
+
+    const data = {
+      csrfmiddlewaretoken: getCookie('csrftoken'),
+    }
+
+    document.querySelector('#id_phone_signin').value = $(
+      '#id_unique_id_signin'
+    ).val()
+
+    if (passwordInput.value !== passwordConfirmInput.value) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Пароли не совпадают!',
+        text: 'Убедитесь что пароли совпадают',
+        confirmButtonColor: '#ed1d25',
+      })
+    }
+
+    const formData = abstractRegisterForm.serializeArray()
+
+    console.log(formData)
+
+    for (var key in formData) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (formData.hasOwnProperty(key)) {
+        data[formData[key].name] = formData[key].value
+      }
+    }
+
+    const url = $(abstractRegisterForm).attr('action')
+    $.ajax({
+      url: url,
+      method: 'POST',
+      dataType: 'JSON',
+      data: data,
+      success: function (response) {
+        if (response.success) {
+          if (_.attr('data-project-type') === 'invivo') {
+            window.location.href = $(abstractRegisterForm).attr('action')
+          } else {
+            document.location.reload()
+          }
+        } else {
+          if (response.form_errors) {
+            let displayMessage = ''
+            for (key in response.form_errors) {
+              displayMessage +=
+                '\n' +
+                response.form_errors[key]
+                  .map(function (elem) {
+                    return elem.message
+                  })
+                  .join('\n')
+            }
+            Swal.fire({
+              icon: 'error',
+              title: 'Ошибка регистрации!',
+              text: displayMessage,
+              confirmButtonColor: '#ed1d25',
+            })
+          }
+        }
+      },
+      error: function (request, errorThrown) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Ошибка регистрации!',
+          text: errorThrown,
+          confirmButtonColor: '#ed1d25',
+        })
+      },
+    })
+    // }
+  })
+  abstractLoginForm.on('submit', function (e) {
+    e.preventDefault()
+
+    var data = {
+      csrfmiddlewaretoken: getCookie('csrftoken'),
+    }
+    let login = $(abstractLoginForm).find('#id_login_login').val(),
+      password = $(abstractLoginForm).find('#id_password_login').val()
+    if (login.length === 4 && password.length === 7) {
+      $('#get-result-form #id_number').val(login)
+      $('#get-result-form #id_code_word').val(password)
+      $('#get-result-form').submit()
+      return
+    }
+    var formData = abstractLoginForm.serializeArray()
+    for (var key in formData) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (formData.hasOwnProperty(key)) {
+        data[formData[key].name] = formData[key].value
+      }
+    }
+
+    setTimeout(function () {
+      $(this).find('button').attr('disabled', true)
+    }, 5000)
+
+    var url = $(this).attr('action')
+
+    $.ajax({
+      context: this,
+      url: url,
+      method: 'POST',
+      dataType: 'JSON',
+      data: data,
+      success: function (response) {
+        if (response.success) {
+          document.location.reload()
+        } else {
+          if (response.form_errors) {
+            let displayMessage = ''
+            for (key in response.form_errors) {
+              displayMessage +=
+                '\n' +
+                response.form_errors[key]
+                  .map(function (elem) {
+                    return elem.message
+                  })
+                  .join('\n')
+            }
+            Swal.fire({
+              title: 'Не удалось авторизоваться',
+              text: `${displayMessage}`,
+              icon: 'error',
+              confirmButtonColor: '#ed1d25',
+              confirmButtonText: 'Попробовать ещё-раз',
+            })
+          }
+        }
+      },
+      error: function (error) {
+        console.error(error)
+        $(this).find('button').attr('disabled', false)
+      },
+    })
+  })
+
+  abstractEditProfileForm.on('submit', function (e) {
+    e.preventDefault()
+    startPreloaderBlack()
+    var data = abstractEditProfileForm.serializeArray()
+    var url = $(this).attr('action')
+
+    data.push({ name: 'csrfmiddlewaretoken', value: getCookie('csrftoken') })
+
+    $.ajax({
+      url: url,
+      method: 'POST',
+      data: data,
+      success: function (response, textStatus, request) {
+        stopPreloaderBlack()
+        if (response.success === true) {
+          $('#EditAccountModal').modal('hide')
+          if (_.attr('data-language-code') === 'uk') {
+            Swal.fire({
+              title: 'Профіль відредагований',
+              icon: 'success',
+              confirmButtonColor: '#ed1d25',
+              confirmButtonText: 'Продолжить',
+            })
+          } else {
+            Swal.fire({
+              title: 'Профиль отредактирован',
+              icon: 'success',
+              confirmButtonColor: '#ed1d25',
+              confirmButtonText: 'Продолжить',
+            })
+          }
+        } else {
+          let message = 'Ошибка при попытке редактирования профиля!'
+          let displayMessage = ''
+          if (response.message) {
+            message = response.message
+          }
+          if (response.form_errors) {
+            for (key in response.form_errors) {
+              displayMessage +=
+                '\n' +
+                response.form_errors[key]
+                  .map(function (elem) {
+                    return elem.message
+                  })
+                  .join('\n')
+            }
+          }
+          Swal.fire({
+            icon: 'error',
+            title: message,
+            text: displayMessage,
+            confirmButtonColor: '#ed1d25',
+          })
+        }
+        stopPreloaderBlack()
+      },
+      error: function (request, textStatus, errorThrown) {
+        console.error(errorThrown)
+        stopPreloaderBlack()
+      },
+    })
+  })
+
+  abstractRestorePasswordForm.on('submit', function (e) {
+    e.preventDefault()
+    startPreloaderBlack()
+    var data = abstractRestorePasswordForm.serializeArray()
+    var url = $(this).attr('action')
+
+    data.push({ name: 'csrfmiddlewaretoken', value: getCookie('csrftoken') })
+
+    $.ajax({
+      url: url,
+      method: 'POST',
+      data: data,
+      success: function (response, textStatus, request) {
+        stopPreloaderBlack()
+        if (response.success === true) {
+          $('#RestorePasswordModal').modal('hide')
+          Swal.fire({
+            icon: 'success',
+            title: 'Процедура запущена',
+            text: 'Проверьте свой e-mail',
+            confirmButtonColor: '#ed1d25',
+          })
+        } else {
+          let message = 'Ошибка при попытке восстановления пароля!'
+          let displayMessage = ''
+          if (response.message) {
+            message = response.message
+          }
+          if (response.form_errors) {
+            for (key in response.form_errors) {
+              displayMessage +=
+                '\n' +
+                response.form_errors[key]
+                  .map(function (elem) {
+                    return elem.message
+                  })
+                  .join('\n')
+            }
+          }
+          Swal.fire({
+            icon: 'error',
+            title: message,
+            text: displayMessage,
+            confirmButtonColor: '#ed1d25',
+          })
+        }
+        stopPreloaderBlack()
+      },
+      error: function (request, textStatus, errorThrown) {
+        console.error(errorThrown)
+        stopPreloaderBlack()
+      },
+    })
+  })
+
+  abstractGetResultForm.on('submit', function (e) {
+    e.preventDefault()
+
+    startPreloaderBlack()
+
+    let url = $(this).attr('action')
+    let codeWord = $('#id_code_word').val()
+    grecaptcha.ready(function () {
+      grecaptcha
+        .execute('6LctmdcZAAAAAOFKNo5ey9kHlQ4P0SmeMaN1uZin', {
+          action: 'homepage',
+        })
+        .then(function (token) {
+          $.ajax({
+            url: '/ajax/check_captcha?captcha=' + token,
+            method: 'POST',
+            data: {
+              captcha: token,
+            },
+            success: function (data) {
+              if (!data.success) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Ошибка при попытке получения результата!',
+                  text: data.message,
+                  confirmButtonColor: '#ed1d25',
+                })
+              } else {
+                var data = abstractGetResultForm.serializeArray()
+                data.push({
+                  name: 'csrfmiddlewaretoken',
+                  value: getCookie('csrftoken'),
+                })
+                // console.log(url);
+                $.ajax({
+                  url: url,
+                  method: 'POST',
+                  data: data,
+                  success: function (response, textStatus, request) {
+                    if (response.success === false) {
+                      let message = 'Ошибка при попытке получения результата!'
+                      let displayMessage = ''
+                      if (response.message) {
+                        message = response.message
+                      }
+                      if (response.form_errors) {
+                        for (key in response.form_errors) {
+                          displayMessage +=
+                            '\n' +
+                            response.form_errors[key]
+                              .map(function (elem) {
+                                return elem.message
+                              })
+                              .join('\n')
+                        }
+                      }
+                      Swal.fire({
+                        icon: 'error',
+                        title: message,
+                        text: displayMessage,
+                        confirmButtonColor: '#ed1d25',
+                      })
+                    } else {
+                      window.location.href = url
+                    }
+                    stopPreloaderBlack()
+                  },
+                  error: function (request, textStatus, errorThrown) {
+                    console.error(errorThrown)
+                    stopPreloaderBlack()
+                  },
+                })
+              }
+            },
+            error: function (request, errorThrown, errorObject) {
+              console.log(errorObject)
+            },
+          })
+        })
+    })
+  })
+
+  feedbackForm.on('submit', function (e) {
+    e.preventDefault()
+    startPreloaderBlack()
+
+    var url = feedbackForm.attr('action')
+
+    grecaptcha.ready(function () {
+      grecaptcha
+        .execute('6LctmdcZAAAAAOFKNo5ey9kHlQ4P0SmeMaN1uZin', {
+          action: 'homepage',
+        })
+        .then(function (token) {
+          $.ajax({
+            url: '/ajax/check_captcha?captcha=' + token,
+            method: 'POST',
+            data: {
+              captcha: token,
+            },
+            success: function (data) {
+              if (!data.success) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Ошибка при попытке получения результата!',
+                  text: data.message,
+                  confirmButtonColor: '#ed1d25',
+                })
+              } else {
+                var data_feedback = feedbackForm.serializeArray()
+                data_feedback.push({
+                  name: 'csrfmiddlewaretoken',
+                  value: getCookie('csrftoken'),
+                })
+                $.ajax({
+                  url: url,
+                  method: 'POST',
+                  data: data_feedback,
+                  success: function (response, textStatus, request) {
+                    stopPreloaderBlack()
+                    if (response.success === true) {
+                      if ($("#js-helper").attr("data-language-code") === 'uk') {
+                        Swal.fire({
+                          icon: 'success',
+                          title: 'Відправлено!',
+                          text: 'Дякуємо за відгук!',
+                          confirmButtonColor: '#ed1d25',
+                        })
+                      } else {
+                        Swal.fire({
+                          icon: 'success',
+                          title: 'Отправлено!',
+                          text: 'Спасибо за отзыв!',
+                          confirmButtonColor: '#ed1d25',
+                        })
+                      }
+                      
+                    } else {
+                      Swal.fire({
+                        icon: 'success',
+                        title: 'Форма заполнена неверно!',
+                        text: response.data.errors,
+                        confirmButtonColor: '#ed1d25',
+                      })
+                    }
+                  },
+                  error: function (request, textStatus, errorThrown) {
+                    stopPreloaderBlack()
+                    console.error(errorThrown)
+                  },
+                })
+              }
+            },
+            error: function (request, errorThrown, errorObject) {
+              console.log(errorObject)
+            },
+          })
+        })
+    })
+  })
+  applySelects()
+
+  $('#get-result-button-from-login-modal').on('click', function (e) {
+    e.preventDefault()
+
+    $('#loginModal').modal('hide')
+    $('#GetResultModal').modal('show')
+  })
+
+  $('#hidden_id_city').on('change', function (e) {
+    setReceptionPointsByCity()
+  })
+
+  applyAllDatePickers()
+
+  $('input[name="sex_create_order"]').each(function () {
+    $(this).on('change', function () {
+      sexSpecificSwitch()
+    })
+  })
+
+  $('#my-city-is-not').on('click', function (e) {
+    $('.region-agree').toggleClass('show')
+  })
+
+  payCash.on('click', function (e) {
+    e.preventDefault()
+    pay()
+  })
+
+  payCard.on('click', function (e) {
+    e.preventDefault()
+    pay('card')
+  })
+
+  payBonus.on('click', function (e) {
+    e.preventDefault()
+    pay('bonus')
+  })
+})
+
+var homeComeInput = $('.come-home-switcher')
+
+function applySelects(index) {
+  if (index === undefined) index = null
+  if (index !== null) {
+    var dropDown = $($('.ae-dropdown[data-index="' + index + '"]')[0])
+    dropDown.unbind('click').on('click', function (e) {
+      e.preventDefault()
+      dropDown.find('.drop-menu').toggleClass('ae-hide')
+    })
+
+    dropDown
+      .find('.drop-menu')
+      .find('li')
+      .each(function (_i, _obj) {
+        var input = $(dropDown).parent().find('input')
+        if ($(_obj).hasClass('selected')) {
+          input.val($(_obj).data('value'))
+          $(dropDown)
+            .find('.ae-select')
+            .find('span.ae-select-content')
+            .html($(_obj).text())
+        }
+
+        $(_obj).on('click', function (e) {
+          e.preventDefault()
+
+          $(dropDown)
+            .find('.ae-select')
+            .find('span.ae-select-content')
+            .html($(_obj).text())
+          var input = $(dropDown).parent().find('input')
+          input.val($(_obj).data('value'))
+          input.trigger('change')
+          $(dropDown)
+            .find('.drop-menu')
+            .find('li.selected')
+            .removeClass('selected')
+          $(_obj).addClass('selected')
+        })
+      })
+  } else {
+    var aeDropdowns = $('.ae-dropdown')
+
+    aeDropdowns.each(function (i, obj) {
+      $(obj).attr('data-index', i)
+
+      $(obj).on('click', function (e) {
+        if ($(obj).attr('id') === 'lang-dropdown') {
+          e.preventDefault()
+        }
+
+        $(obj).find('.drop-menu').toggleClass('ae-hide')
+      })
+
+      $(obj)
+        .find('.drop-menu')
+        .find('li')
+        .each(function (_i, _obj) {
+          var input = $(obj).parent().find('input')
+          if ($(_obj).hasClass('selected')) {
+            input.val($(_obj).data('value'))
+            $(obj)
+              .find('.ae-select')
+              .find('span.ae-select-content')
+              .html($(_obj).text())
+          }
+
+          $(_obj).on('click', function (e) {
+            e.preventDefault()
+
+            $(obj)
+              .find('.ae-select')
+              .find('span.ae-select-content')
+              .html($(_obj).text())
+            var input = $(obj).parent().find('input')
+            input.val($(_obj).data('value'))
+            input.trigger('change')
+            $(obj)
+              .find('.drop-menu')
+              .find('li.selected')
+              .removeClass('selected')
+            $(_obj).addClass('selected')
+          })
+        })
+    })
+  }
+}
+
+var city_str = 'Город'
+var punkt_priema = 'Пункт приема'
+var choose_on_map = 'Выбрать на карте'
+var no_choise = 'Не выбрано'
+var office_phone = 'Рабочий телефон'
+var your_address = 'Ваш адрес'
+var menstruation_date = 'Дата последней менструации'
+var pregnancy = 'Срок беременности'
+var week = 'неделя'
+
+if (_.attr('data-language-code') === 'uk') {
+  city_str = 'Місто'
+  punkt_priema = 'Пункт прийому'
+  choose_on_map = 'Показувати на сайті'
+  no_choise = 'Не вибрано'
+  office_phone = 'Робочий телефон'
+  your_address = 'Ваша адреса'
+  menstruation_date = 'Дата останній менструацій'
+  pregnancy = 'Термін вагітності'
+  week = 'тиждень'
+}
+
+var setReceptionPointsByCity = function () {
+  var citySelect = $('#hidden_id_city')
+  var rpSelect = $('#id_reception_point')
+  $.ajax({
+    url: _.attr('data-get-rp-by-city'),
+    data: {
+      city: citySelect.text(),
+    },
+    success: function (data) {
+      var rpOptionsString =
+        '<li data-value="" class="selected">' + no_choise + '</li>'
+      for (var i = 0; i < data.length; ++i) {
+        var id = data[i].id
+        if (data[i].create_order == true) {
+          if (data[i].address === '') {
+            var name = data[i].name
+          } else {
+            var name = data[i].address
+          }
+          rpOptionsString += '<li data-value="' + id + '">' + name + '</li>'
+        }
+      }
+      rpSelect.html(rpOptionsString)
+      applySelects(rpSelect.parent().data('index'))
+      renderReceptionPointsModal(citySelect.val())
+    },
+  })
+}
+
+function getDatePickerOptions() {
+  return {
+    dateFormat: 'dd.mm.yy',
+    navigationAsDateFormat: true,
+    changeYear: true,
+    firstDay: 1,
+    yearRange: 'c-100:c+0',
+    closeText: 'Закрыть',
+    prevText: '&#x3C;Пред',
+    nextText: 'След&#x3E;',
+    currentText: 'Сегодня',
+    monthNames: [
+      'Январь',
+      'Февраль',
+      'Март',
+      'Апрель',
+      'Май',
+      'Июнь',
+      'Июль',
+      'Август',
+      'Сентябрь',
+      'Октябрь',
+      'Ноябрь',
+      'Декабрь',
+    ],
+    monthNamesShort: [
+      'Янв',
+      'Фев',
+      'Мар',
+      'Апр',
+      'Май',
+      'Июн',
+      'Июл',
+      'Авг',
+      'Сен',
+      'Окт',
+      'Ноя',
+      'Дек',
+    ],
+    dayNames: [
+      'воскресенье',
+      'понедельник',
+      'вторник',
+      'среда',
+      'четверг',
+      'пятница',
+      'суббота',
+    ],
+    dayNamesShort: ['вск', 'пнд', 'втр', 'срд', 'чтв', 'птн', 'сбт'],
+    dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+    weekHeader: 'Нед',
+    isRTL: false,
+    showMonthAfterYear: false,
+  }
+}
+
+function applyAllDatePickers() {
+  $('.invivo-trigger-date-picker').each(function (i, obj) {
+    $(obj).datepicker('option', getDatePickerOptions())
+    $(obj).datepicker('option', 'maxDate', '+3m')
+    $(obj).datepicker('option', 'minDate', '-90y')
+  })
+  $('#id_date_of_birth').datepicker('option', 'maxDate', '-1d')
+  $('#id_order_date').datepicker('option', 'minDate', '0d')
+  $('#id_home_come_order_date').datepicker('option', 'minDate', '0d')
+}
+
+var searchGuts = function (input, insertAll) {}
+
+function applyAddToBasketCheckboxes() {}
+
+var sexSpecificSwitch = function () {
+  var checked = parseInt($('input[name="sex_create_order"]:checked').val(), 10)
+  var pregnancyInputStr =
+    '<input name="pregnancy" type="number" min="1" max="40" placeholder="' +
+    pregnancy +
+    ', ' +
+    week +
+    '" id="order_form_pregnancy_input">'
+  var menstruationInputStr =
+    '<input name="menstruation_date" id="id_menstruation_date" class="invivo-trigger-date-picker" type="text" placeholder="' +
+    menstruation_date +
+    '" readonly autocomplete="off">'
+  if (checked === 1) {
+    pregnancyContainer.html('')
+    menstruationContainer.html('')
+  } else if (checked === 0) {
+    pregnancyContainer.html(
+      '<label for="id_menstruation_date"><p>' +
+        pregnancy +
+        '</p>' +
+        pregnancyInputStr +
+        '</label>'
+    )
+    menstruationContainer.html(
+      '<label for="id_pregnancy"><p>' +
+        menstruation_date +
+        '</p>' +
+        menstruationInputStr +
+        '</label>'
+    )
+    applyAllDatePickers()
+    $('#id_menstruation_date').datepicker()
+    $('#id_menstruation_date').datepicker('option', getDatePickerOptions())
+    $('#id_menstruation_date').datepicker('option', 'maxDate', '0d')
+    validatePregnancyInput()
+  }
+}
+
+var validatePregnancyInput = function () {
+  $('#order_form_pregnancy_input')
+    .unbind('change')
+    .bind('change', function () {
+      if ($(this).val() > 40) $(this).val(40)
+      else if ($(this).val() < 1) $(this).val(1)
+    })
+}
+
+var setSelfInfo2ndStep = function () {
+  if (_.attr('user_client') === 'false') {
+    return
+  }
+  $.ajax({
+    url: _.attr('data-get-current-user-info'),
+    success: function (data) {
+      var uniqueId = data['unique_id']
+      var name = data['name']
+      var sName = data['s_name']
+      var lastName = data['last_name']
+      var birthDate = data['birth_date']
+      var sex = data['sex']
+      _.attr('data-user-info', JSON.stringify(data))
+      listenForOtherPerson([
+        {
+          input: $('#id_first_name'),
+          value: name,
+          type: 'text',
+        },
+        {
+          input: $('#id_s_name'),
+          value: sName,
+          type: 'text',
+        },
+        {
+          input: $('#id_last_name'),
+          value: lastName,
+          type: 'text',
+        },
+        {
+          input: $('#id_birth_date'),
+          value: birthDate,
+          type: 'date',
+        },
+        {
+          input: $('#id_unique_id'),
+          value: uniqueId,
+          type: 'text',
+        },
+        {
+          input: $('input[name="sex_create_order"]'),
+          value: sex,
+          type: 'radio',
+        },
+      ])
+      sexSpecificSwitch()
+    },
+    error: function () {
+      _.attr('data-user-info', JSON.stringify({}))
+    },
+  })
+}
+
+var listenForOtherPerson = function (inputs) {
+  var userInstance = JSON.parse(_.attr('data-user-info'))
+  // console.log(userInstance);
+  var forOtherManInput = $('input[name="on_other_man"]')
+  for (var i = 0; i < inputs.length; ++i) {
+    var inputItem = inputs[i]
+    switch (inputItem.type) {
+      case 'text':
+        $(inputItem.input).val(inputItem.value)
+        $(inputItem.input).on('input change keyup', function (e) {
+          if ($(this).val() !== userInstance[$(this).attr('name')]) {
+            forOtherManInput.filter('[value="1"]').prop('checked', true)
+          } else {
+            forOtherManInput.filter('[value="0"]').prop('checked', true)
+          }
+        })
+        break
+      case 'date':
+        // console.log(inputItem);
+        $(inputItem.input).datepicker('destroy')
+        $(inputItem.input).datepicker({
+          dateFormat: 'yy-mm-dd',
+          navigationAsDateFormat: true,
+          changeYear: true,
+          firstDay: 1,
+          yearRange: 'c-100:c+0',
+          monthNames: [
+            'Январь',
+            'Февраль',
+            'Март',
+            'Апрель',
+            'Май',
+            'Июнь',
+            'Июль',
+            'Август',
+            'Сентябрь',
+            'Октябрь',
+            'Ноябрь',
+            'Декабрь',
+          ],
+          monthNamesShort: [
+            'Янв',
+            'Фев',
+            'Мар',
+            'Апр',
+            'Май',
+            'Июн',
+            'Июл',
+            'Авг',
+            'Сен',
+            'Окт',
+            'Ноя',
+            'Дек',
+          ],
+          dayNames: [
+            'Воскресение',
+            'Понедельник',
+            'Вторник',
+            'Среда',
+            'Четверг',
+            'Пятница',
+            'Суббота',
+          ],
+          dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+          onSelect: function (selectedDateText, dateInstance) {
+            // console.log(selectedDateText, userInstance[$(this).attr('name')]);
+            if (selectedDateText !== userInstance[$(this).attr('name')]) {
+              forOtherManInput.filter('[value="1"]').prop('checked', true)
+            } else {
+              forOtherManInput.filter('[value="0"]').prop('checked', true)
+            }
+          },
+        })
+
+        $(inputItem.input).datepicker('setDate', inputItem.value)
+        break
+      case 'radio':
+        $(inputItem.input)
+          .filter('[value="' + inputItem.value + '"]')
+          .prop('checked', true)
+
+        $(inputItem.input).each(function (i, obj) {
+          $(obj)
+            .unbind('change')
+            .bind('change', function () {
+              if (
+                parseInt($(obj).val(), 10) !==
+                parseInt(userInstance[$(obj).attr('name')], 10)
+              ) {
+                forOtherManInput.filter('[value="1"]').prop('checked', true)
+              } else {
+                forOtherManInput.filter('[value="0"]').prop('checked', true)
+              }
+              sexSpecificSwitch()
+            })
+        })
+        break
+      default:
+        // $(inputItem.input).val(inputItem.value);
+        console.error(
+          "'listenForOtherPerson' event called and goes to default branch in switch"
+        )
+    }
+  }
+}
+
+function open_research_detail(link) {
+  $.ajax({
+    url: link,
+    method: 'GET',
+    success: function (response) {
+      $('#PackageModal .modal-body').replaceWith(response)
+      $('#PackageModal').modal('show')
+      $('#add_service_btn').on('click', function (e) {
+        if ($('#js-helper').attr('user_client') === 'true') {
+          $(this).attr('style', 'background: #a7a7a7;')
+          $(this).text('Добавлено')
+          this.disabled = true
+        } else {
+          $('#PackageModal button.close').click()
+        }
+      })
+      $('#PackageModal a').on('click', function () {
+        $.ajax({
+          url: $(this).attr('data-ajax-url'),
+          method: 'GET',
+          success: function (response) {
+            $('#PackageModalInner .modal-body').html(response)
+          },
+        })
+      })
+    },
+  })
+}
+var pay = function (type) {
+  if (type === undefined) type = 'cash'
+  const inputs = $('#checkout-step').find(
+    'input[type=text], input[type=checkbox], input[type=radio]:checked, input[type=hidden], input[type=number]'
+  )
+  const create_order_url = $('#checkout-step').attr('data-url')
+
+  const receptionPoint = $('#id_reception_point')
+    .find('li[class=selected]')
+    .attr('data-value')
+
+  const data = {
+    csrfmiddlewaretoken: getCookie('csrftoken'),
+    payment_type: type,
+    reception_point: receptionPoint,
+  }
+
+  for (let i = 0; i < inputs.length; ++i) {
+    if ($(inputs[i]).hasAttr('name')) {
+      if ($(inputs[i]).attr('name') === 'sex_create_order') {
+        data['sex'] = $(inputs[i]).val()
+      } else {
+        data[$(inputs[i]).attr('name')] = $(inputs[i]).val()
+      }
+    }
+  }
+  if ($(homeComeInput[0]).prop('checked')) {
+    data['home_come_order_date'] = $('#id_home_come_order_date').val()
+    data['home_come_address'] = $('#id_home_come_address').val()
+    data['home_come_lng'] = $('#id_home_come_lng').val()
+    data['home_come_lat'] = $('#id_home_come_lat').val()
+    data['home_come_phone'] = $('#id_home_come_phone').val()
+  }
+
+  startPreloaderBlack()
+  $.ajax({
+    url: create_order_url,
+    method: 'POST',
+    dataType: 'JSON',
+    data: data,
+    success: function (response) {
+      stopPreloaderBlack()
+      // console.log(response);
+
+      if (response.success === true) {
+        if (_.attr('data-project-type') === 'invivo') {
+          window.location.href = create_order_url
+        }
+        if (response.data.type === 'card') {
+          window.location.href = response.data.payment_link
+          // $('body').append('<div id="payment-form-wrapper">' + response.data.html + '</div>');
+          // console.log($($('#payment-form-wrapper').find('form')[0]));
+          // debugger;
+          // $($('#payment-form-wrapper').find('form')[0]).submit()
+        } else if (response.data.type === 'bonus') {
+          $('#pay-with-bonus-button').hide()
+          $('#order-3rd-step-final-block').text(response.data.amount_after_pay)
+          Swal.fire({
+            icon: 'success',
+            title: 'Cпасибо!',
+            text:
+              'Заказ создан. Оплачено ' +
+              response.data.old_bonus +
+              '. Бонусов осталось ' +
+              response.data.new_bonus +
+              '. Вы будете переведены в личный кабинет сейчас...',
+            confirmButtonColor: '#ed1d25',
+          })
+          setTimeout(function () {
+            window.location.href = _.attr('client-cab-url')
+          }, 3000)
+        } else {
+          Swal.fire({
+            icon: 'success',
+            title: 'Cпасибо!',
+            text: 'Заказ создан. Вы будете переведены в личный кабинет сейчас...',
+            confirmButtonColor: '#ed1d25',
+          })
+          setTimeout(function () {
+            window.location.href = _.attr('client-cab-url')
+          }, 3000)
+        }
+      } else {
+        let displayMessage = ''
+        if (response.message) {
+          displayMessage += response.message
+        }
+        if (response.form_errors) {
+          for (key in response.form_errors) {
+            displayMessage +=
+              '\n' +
+              response.form_errors[key]
+                .map(function (elem) {
+                  return elem.message
+                })
+                .join('\n')
+          }
+        }
+        Swal.fire({
+          icon: 'success',
+          title: 'Ошибка при создании заказа!',
+          text: displayMessage,
+          confirmButtonColor: '#ed1d25',
+        })
+      }
+    },
+    error: function (request, errorThrown, errorObject) {
+      console.log(errorObject)
+    },
+  })
+}
+
+function show_region_choice_popup() {
+  $('.region-agree').addClass('show')
+  $('.block__modal_sales').addClass('active_sales')
+}
+
+if (getCookie('visited') !== 'visited') {
+  if (!$('#js-helper').data('style') == 'd_paster') {
+    show_region_choice_popup()
+  }
+  $('#SalesModal').modal('show')
+  document.cookie =
+    'visited=visited;' +
+    'expires=' +
+    new Date(new Date().getTime() + 60 * 60 * 24 * 15).toGMTString() +
+    ';path=/'
+}
+

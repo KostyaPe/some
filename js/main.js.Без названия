@@ -1,0 +1,1458 @@
+if (document.location.href.includes('?open_cart=true') === true) {
+  $('.first-block').show()
+}
+
+$(document).ready(function () {
+  $('ul.answers').on('click', 'li', function () {
+    $('.answers li.active').removeClass('active')
+    $(this).addClass('active')
+    $('.primary-btn').removeClass('gray')
+  })
+  // onClick new options list of new select
+
+  // select_1
+  $('.select_1 .ae-select-content').text(
+    $('.select_1 .drop-menu > li.selected').text()
+  )
+  let newOptions1 = $('.select_1 .drop-menu > li')
+  newOptions1.click(function () {
+    $('.select_1 .ae-select-content').text($(this).text())
+    $('.select_1 .drop-menu > li').removeClass('selected')
+    $(this).addClass('selected')
+  })
+  let aeDropdown1 = $('.select_1 .ae-dropdown')
+  aeDropdown1.click(function () {
+    $('.select_1 .drop-menu').toggleClass('ae-hide')
+  })
+  // select_1_end
+
+  // select_7
+  $('.select_7 .ae-select-content').text(
+    $('.select_7 .drop-menu > li.selected').text()
+  )
+  let newOptions = $('.select_7 .drop-menu > li')
+  newOptions.click(function () {
+    $('.select_7 .ae-select-content').text($(this).text())
+    $('.select_7 .drop-menu > li').removeClass('selected')
+    $(this).addClass('selected')
+  })
+  let aeDropdown = $('.select_7 .ae-dropdown')
+  aeDropdown.click(function () {
+    $('.select_7 .drop-menu').toggleClass('ae-hide')
+  })
+  // select_7_end
+  //
+  // select_8
+  $('.select_8 .ae-select-content').text(
+    $('.select_8 .drop-menu > li.selected').text()
+  )
+  let newOptions_8 = $('.select_8 .drop-menu > li')
+  newOptions_8.click(function () {
+    $('.select_8 .ae-select-content').text($(this).text())
+    $('.select_8 .drop-menu > li').removeClass('selected')
+    $(this).addClass('selected')
+    let input = null
+  })
+
+  let aeDropdown_8 = $('.select_8 .ae-dropdown')
+  aeDropdown_8.click(function () {
+    $('.select_8 .drop-menu').toggleClass('ae-hide')
+  })
+  // select_8_end
+
+  // select_14
+  let newOptions14 = $('.select_14 .drop-menu > li')
+  newOptions14.click(function () {
+    $('.select_14 .ae-select-content').text($(this).text())
+    $('.select_14 .drop-menu > li').removeClass('selected')
+    $(this).addClass('selected')
+  })
+  let aeDropdown14 = $('.select_14 .ae-dropdown')
+  aeDropdown14.click(function () {
+    $('.select_14 .drop-menu').toggleClass('ae-hide')
+  })
+  // select_14_end
+
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_1 .ae-dropdown')
+    let div = $('.select_1 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_2 .ae-dropdown')
+    let div = $('.select_2 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_3 .ae-dropdown')
+    let div = $('.select_3 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_4 .ae-dropdown')
+    let div = $('.select_4 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_5 .ae-dropdown')
+    let div = $('.select_5 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_6 .ae-dropdown')
+    let div = $('.select_6 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_7 .ae-dropdown')
+    let div = $('.select_7 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_8 .ae-dropdown')
+    let div = $('.select_8 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_9 .ae-dropdown')
+    let div = $('.select_9 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_10 .ae-dropdown')
+    let div = $('.select_10 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_11 .ae-dropdown')
+    let div = $('.select_11 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_12 .ae-dropdown')
+    let div = $('.select_12 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_13 .ae-dropdown')
+    let div = $('.select_13 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.select_14 .ae-dropdown')
+    let div = $('.select_14 .drop-menu') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.addClass('ae-hide') // скрываем его
+    }
+  })
+
+  jQuery(function ($) {})
+
+  var _ = $('#js-helper')
+
+  $('.region-toggle').click(function () {
+    $('.region-agree').toggleClass('show')
+  })
+  $('.cart-toggle').click(function () {
+    $('#cart-popup').toggleClass('show')
+  })
+  $('.search-toggle').click(function () {
+    $('.drop-list').toggleClass('show')
+  })
+
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.region-toggle')
+    let div = $('.region-agree') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.removeClass('show') // скрываем его
+    }
+  })
+  $(document).click(function (e) {
+    // событие клика по веб-документу
+    let div1 = $('.cart-toggle')
+    let div = $('#cart-popup') // тут указываем ID элемента
+    if (
+      div1.has(e.target).length === 0 &&
+      !div.is(e.target) && // если клик был не по нашему блоку
+      div.has(e.target).length === 0
+    ) {
+      // и не по его дочерним элементам
+      div.removeClass('show') // скрываем его
+    }
+  })
+
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+  $(function () {
+    $('[data-toggle="popover"]').popover()
+  })
+
+  $('.main-slick-slider-block').slick({
+    dots: false,
+    infinite: true,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    adaptiveHeight: true,
+    lazyLoad: 'progressive',
+    mobileFirst: true,
+  })
+
+  if (_.attr('data-style') == 'd_paster') {
+    $('#pp-slider').slick({
+      dots: true,
+      infinite: true,
+      speed: 300,
+      focusOnSelect: false,
+      slidesToShow: 4,
+      dots: false,
+      nextArrow: '.pp-next',
+      prevArrow: '.pp-prev',
+      responsive: [
+        {
+          breakpoint: 1200,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 1,
+            infinite: true,
+            dots: false,
+          },
+        },
+        {
+          breakpoint: 1000,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 1,
+          },
+        },
+        {
+          breakpoint: 800,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 1,
+          },
+        },
+        {
+          breakpoint: 600,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+          },
+        },
+        // You can unslick at a given breakpoint now by adding:
+        // settings: “unslick”
+        // instead of a settings object
+      ],
+    })
+  } else {
+    $('#pp-slider').slick({
+      dots: true,
+      infinite: true,
+      speed: 300,
+      focusOnSelect: false,
+      slidesToShow: 5,
+      dots: false,
+      nextArrow: '.pp-next',
+      prevArrow: '.pp-prev',
+      responsive: [
+        {
+          breakpoint: 1300,
+          settings: {
+            slidesToShow: 5,
+            slidesToScroll: 1,
+            infinite: true,
+            dots: false,
+          },
+        },
+        {
+          breakpoint: 1000,
+          settings: {
+            slidesToShow: 4,
+            slidesToScroll: 1,
+          },
+        },
+        {
+          breakpoint: 800,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 1,
+          },
+        },
+        {
+          breakpoint: 600,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+          },
+        },
+        // You can unslick at a given breakpoint now by adding:
+        // settings: “unslick”
+        // instead of a settings object
+      ],
+    })
+  }
+  $('#promo-slide').slick({
+    infinite: true,
+    speed: 300,
+    focusOnSelect: false,
+    slidesToShow: 4,
+    dots: false,
+    nextArrow: '.ss-next',
+    prevArrow: '.ss-prev',
+    responsive: [
+      {
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 1000,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 800,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+      // You can unslick at a given breakpoint now by adding:
+      // settings: “unslick”
+      // instead of a settings object
+    ],
+  })
+
+  $('#news-slider').slick({
+    infinite: true,
+    speed: 300,
+    focusOnSelect: false,
+    slidesToShow: 4,
+    dots: false,
+    nextArrow: '.nn-next',
+    prevArrow: '.nn-prev',
+    responsive: [
+      {
+        breakpoint: 1300,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 1000,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 800,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+      // You can unslick at a given breakpoint now by adding:
+      // settings: “unslick”
+      // instead of a settings object
+    ],
+  })
+
+  $('#s-slider').slick({
+    dots: true,
+    infinite: true,
+    speed: 850,
+    focusOnSelect: true,
+    slidesToShow: 1,
+    dots: false,
+    nextArrow: '.ss-next',
+    prevArrow: '.ss-prev',
+    // slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          infinite: true,
+          dots: false,
+        },
+      },
+      {
+        breakpoint: 800,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+      // You can unslick at a given breakpoint now by adding:
+      // settings: "unslick"
+      // instead of a settings object
+    ],
+  })
+
+  $('#promo-slide2').slick({
+    infinite: true,
+    speed: 300,
+    focusOnSelect: false,
+    slidesToShow: 4,
+    dots: false,
+    centerMode: false,
+    nextArrow: '.ss-next',
+    prevArrow: '.ss-prev',
+    responsive: [
+      {
+        breakpoint: 1300,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          centerMode: false,
+        },
+      },
+      {
+        breakpoint: 1000,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          // centerMode: true,
+        },
+      },
+      {
+        breakpoint: 800,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          //  centerMode: true,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          //  centerMode: true,
+        },
+      },
+      // You can unslick at a given breakpoint now by adding:
+      // settings: “unslick”
+      // instead of a settings object
+    ],
+  })
+})
+
+$('.mobile-news-inner').slick({
+  dots: true,
+  infinite: true,
+  speed: 850,
+  focusOnSelect: true,
+  slidesToShow: 1,
+})
+
+$('.add-person').on('click', function () {
+  $('.statement-personal-data').append(
+    '<div class="statement-personal-form" id="statement-personal-form"><input type="text" class="statement-personal-form-data-name" placeholder="ФИО">\n' +
+      '<input type="text" class="statement-personal-form-data-date" placeholder="Дата рождения"></div>'
+  )
+})
+;(function ($) {
+  // Begin jQuery
+  $(function () {
+    // DOM ready
+    // If a link has a dropdown, add sub menu toggle.
+
+    $('nav ul li a:not(:only-child)').click(function (e) {
+      $(this).siblings('.nav-dropdown').toggle()
+      // Close one dropdown when selecting another
+      $('.nav-dropdown').not($(this).siblings()).hide()
+      e.stopPropagation()
+    })
+    $('nav ul li a:not(:only-child)').mouseenter(function (e) {
+      $(this).siblings('.nav-dropdown').toggle()
+      // Close one dropdown when selecting another
+      $('.nav-dropdown').not($(this).siblings()).hide()
+      e.stopPropagation()
+    })
+
+    // Clicking away from dropdown will remove the dropdown class
+    $('html').click(function () {
+      $('.nav-dropdown').hide()
+    })
+    // Toggle open and close nav styles on click
+    $('#nav-toggle').click(function () {
+      $('nav ul').slideToggle()
+    })
+    // Hamburger to X toggle
+    $('#nav-toggle').on('click', function () {
+      this.classList.toggle('active')
+    })
+  }) // end DOM ready
+})(jQuery) // end jQuery
+
+// simplebar custom
+;(function (factory) {
+  if (typeof module === 'object' && typeof module.exports === 'object') {
+    factory(require('jquery'), window, document)
+  } else {
+    factory(window.jQuery, window, document)
+  }
+})(function ($, window, document, undefined) {
+  /**
+   * Calculate scrollbar width
+   *
+   * Called only once as a constant letiable: we assume that scrollbar width never change
+   *
+   * Original function by Jonathan Sharp:
+   * http://jdsharp.us/jQuery/minute/calculate-scrollbar-width.php
+   */
+  let SCROLLBAR_WIDTH
+
+  function scrollbarWidth() {
+    // Append a temporary scrolling element to the DOM, then measure
+    // the difference between its outer and inner elements.
+    let tempEl = $(
+        '<div class="scrollbar-width-tester" style="width:50px;height:50px;overflow-y:scroll;top:-200px;left:-200px;"><div style="height:100px;"></div>'
+      ),
+      width = 0,
+      widthMinusScrollbars = 0
+
+    $('body').append(tempEl)
+    ;(width = $(tempEl).innerWidth()),
+      (widthMinusScrollbars = $('div', tempEl).innerWidth())
+
+    tempEl.remove()
+
+    return width - widthMinusScrollbars
+  }
+
+  let IS_WEBKIT = 'WebkitAppearance' in document.documentElement.style
+
+  // SimpleBar Constructor
+  function SimpleBar(element, options) {
+    ;(this.el = element),
+      (this.$el = $(element)),
+      this.$track,
+      this.$scrollbar,
+      this.dragOffset,
+      this.flashTimeout,
+      (this.$contentEl = this.$el),
+      (this.$scrollContentEl = this.$el),
+      (this.scrollDirection = 'vert'),
+      (this.scrollOffsetAttr = 'scrollTop'),
+      (this.sizeAttr = 'height'),
+      (this.scrollSizeAttr = 'scrollHeight'),
+      (this.offsetAttr = 'top')
+
+    this.options = $.extend({}, SimpleBar.DEFAULTS, options)
+    this.theme = this.options.css
+
+    this.init()
+  }
+
+  SimpleBar.DEFAULTS = {
+    wrapContent: true,
+    autoHide: true,
+    css: {
+      container: 'simplebar',
+      content: 'simplebar-content',
+      scrollContent: 'simplebar-scroll-content',
+      scrollbar: 'simplebar-scrollbar',
+      scrollbarTrack: 'simplebar-track',
+    },
+  }
+
+  SimpleBar.prototype.init = function () {
+    // Measure scrollbar width
+    if (typeof SCROLLBAR_WIDTH === 'undefined') {
+      SCROLLBAR_WIDTH = scrollbarWidth()
+    }
+
+    // If scrollbar is a floating scrollbar, disable the plugin
+    if (SCROLLBAR_WIDTH === 0) {
+      this.$el.css('overflow', 'auto')
+
+      return
+    }
+
+    if (
+      this.$el.data('simplebar-direction') === 'horizontal' ||
+      this.$el.hasClass(this.theme.container + ' horizontal')
+    ) {
+      this.scrollDirection = 'horiz'
+      this.scrollOffsetAttr = 'scrollLeft'
+      this.sizeAttr = 'width'
+      this.scrollSizeAttr = 'scrollWidth'
+      this.offsetAttr = 'left'
+    }
+
+    if (this.options.wrapContent) {
+      this.$el.wrapInner(
+        '<div class="' +
+          this.theme.scrollContent +
+          '"><div class="' +
+          this.theme.content +
+          '"></div></div>'
+      )
+    }
+
+    this.$contentEl = this.$el.find('.' + this.theme.content)
+
+    this.$el.prepend(
+      '<div class="' +
+        this.theme.scrollbarTrack +
+        '"><div class="' +
+        this.theme.scrollbar +
+        '"></div></div>'
+    )
+    this.$track = this.$el.find('.' + this.theme.scrollbarTrack)
+    this.$scrollbar = this.$el.find('.' + this.theme.scrollbar)
+
+    this.$scrollContentEl = this.$el.find('.' + this.theme.scrollContent)
+
+    this.resizeScrollContent()
+
+    if (this.options.autoHide) {
+      this.$el.on('mouseenter', $.proxy(this.flashScrollbar, this))
+    }
+
+    this.$scrollbar.on('mousedown', $.proxy(this.startDrag, this))
+    this.$scrollContentEl.on('scroll', $.proxy(this.startScroll, this))
+
+    this.resizeScrollbar()
+
+    if (!this.options.autoHide) {
+      this.showScrollbar()
+    }
+  }
+
+  /**
+   * Start scrollbar handle drag
+   */
+  SimpleBar.prototype.startDrag = function (e) {
+    // Preventing the event's default action stops text being
+    // selectable during the drag.
+    e.preventDefault()
+
+    // Measure how far the user's mouse is from the top of the scrollbar drag handle.
+    let eventOffset = e.pageY
+    if (this.scrollDirection === 'horiz') {
+      eventOffset = e.pageX
+    }
+    this.dragOffset = eventOffset - this.$scrollbar.offset()[this.offsetAttr]
+
+    $(document).on('mousemove', $.proxy(this.drag, this))
+    $(document).on('mouseup', $.proxy(this.endDrag, this))
+  }
+
+  /**
+   * Drag scrollbar handle
+   */
+  SimpleBar.prototype.drag = function (e) {
+    e.preventDefault()
+
+    // Calculate how far the user's mouse is from the top/left of the scrollbar (minus the dragOffset).
+    let eventOffset = e.pageY,
+      dragPos = null,
+      dragPerc = null,
+      scrollPos = null
+
+    if (this.scrollDirection === 'horiz') {
+      eventOffset = e.pageX
+    }
+
+    dragPos =
+      eventOffset - this.$track.offset()[this.offsetAttr] - this.dragOffset
+    // Convert the mouse position into a percentage of the scrollbar height/width.
+    dragPerc = dragPos / this.$track[this.sizeAttr]()
+    // Scroll the content by the same percentage.
+    scrollPos = dragPerc * this.$contentEl[0][this.scrollSizeAttr]
+
+    this.$scrollContentEl[this.scrollOffsetAttr](scrollPos)
+  }
+
+  /**
+   * End scroll handle drag
+   */
+  SimpleBar.prototype.endDrag = function () {
+    $(document).off('mousemove', this.drag)
+    $(document).off('mouseup', this.endDrag)
+  }
+
+  /**
+   * Resize scrollbar
+   */
+  SimpleBar.prototype.resizeScrollbar = function () {
+    if (SCROLLBAR_WIDTH === 0) {
+      return
+    }
+
+    let contentSize = this.$contentEl[0][this.scrollSizeAttr],
+      scrollOffset = this.$scrollContentEl[this.scrollOffsetAttr](), // Either scrollTop() or scrollLeft().
+      scrollbarSize = this.$track[this.sizeAttr](),
+      scrollbarRatio = scrollbarSize / contentSize,
+      // Calculate new height/position of drag handle.
+      // Offset of 2px allows for a small top/bottom or left/right margin around handle.
+      handleOffset = Math.round(scrollbarRatio * scrollOffset) + 2,
+      handleSize = Math.floor(scrollbarRatio * (scrollbarSize - 2)) - 2
+
+    if (scrollbarSize < contentSize) {
+      if (this.scrollDirection === 'vert') {
+        this.$scrollbar.css({ top: handleOffset, height: handleSize })
+      } else {
+        this.$scrollbar.css({ left: handleOffset, width: handleSize })
+      }
+      this.$track.show()
+    } else {
+      this.$track.hide()
+    }
+  }
+
+  /**
+   * On scroll event handling
+   */
+  SimpleBar.prototype.startScroll = function (e) {
+    // Simulate event bubbling to root element
+    this.$el.trigger(e)
+
+    this.flashScrollbar()
+  }
+
+  /**
+   * Flash scrollbar visibility
+   */
+  SimpleBar.prototype.flashScrollbar = function () {
+    this.resizeScrollbar()
+    this.showScrollbar()
+  }
+
+  /**
+   * Show scrollbar
+   */
+  SimpleBar.prototype.showScrollbar = function () {
+    this.$scrollbar.addClass('visible')
+
+    if (!this.options.autoHide) {
+      return
+    }
+    if (typeof this.flashTimeout === 'number') {
+      window.clearTimeout(this.flashTimeout)
+    }
+
+    this.flashTimeout = window.setTimeout(
+      $.proxy(this.hideScrollbar, this),
+      1000
+    )
+  }
+
+  /**
+   * Hide Scrollbar
+   */
+  SimpleBar.prototype.hideScrollbar = function () {
+    this.$scrollbar.removeClass('visible')
+    if (typeof this.flashTimeout === 'number') {
+      window.clearTimeout(this.flashTimeout)
+    }
+  }
+
+  /**
+   * Resize content element
+   */
+  SimpleBar.prototype.resizeScrollContent = function () {
+    if (IS_WEBKIT) {
+      return
+    }
+
+    if (this.scrollDirection === 'vert') {
+      this.$scrollContentEl.width(this.$el.width() + SCROLLBAR_WIDTH)
+      this.$scrollContentEl.height(this.$el.height())
+    } else {
+      this.$scrollContentEl.width(this.$el.width())
+      this.$scrollContentEl.height(this.$el.height() + SCROLLBAR_WIDTH)
+    }
+  }
+
+  /**
+   * Recalculate scrollbar
+   */
+  SimpleBar.prototype.recalculate = function () {
+    this.resizeScrollContent()
+    this.resizeScrollbar()
+  }
+
+  /**
+   * Getter for original scrolling element
+   */
+  SimpleBar.prototype.getScrollElement = function () {
+    return this.$scrollContentEl
+  }
+
+  /**
+   * Getter for content element
+   */
+  SimpleBar.prototype.getContentElement = function () {
+    return this.$contentEl
+  }
+
+  /**
+   * Data API
+   */
+  $(window).on('load', function () {
+    $('[data-simplebar-direction]').each(function () {
+      $(this).simplebar()
+    })
+  })
+
+  /**
+   * Plugin definition
+   */
+  let old = $.fn.simplebar
+
+  $.fn.simplebar = function (options) {
+    let args = arguments,
+      returns
+
+    // If the first parameter is an object (options), or was omitted,
+    // instantiate a new instance of the plugin.
+    if (typeof options === 'undefined' || typeof options === 'object') {
+      return this.each(function () {
+        // Only allow the plugin to be instantiated once,
+        // so we check that the element has no plugin instantiation yet
+        if (!$.data(this, 'simplebar')) {
+          $.data(this, 'simplebar', new SimpleBar(this, options))
+        }
+      })
+
+      // If the first parameter is a string
+      // treat this as a call to a public method.
+    } else if (typeof options === 'string') {
+      this.each(function () {
+        let instance = $.data(this, 'simplebar')
+
+        // Tests that there's already a plugin-instance
+        // and checks that the requested public method exists
+        if (
+          instance instanceof SimpleBar &&
+          typeof instance[options] === 'function'
+        ) {
+          // Call the method of our plugin instance,
+          // and pass it the supplied arguments.
+          returns = instance[options].apply(
+            instance,
+            Array.prototype.slice.call(args, 1)
+          )
+        }
+
+        // Allow instances to be destroyed via the 'destroy' method
+        if (options === 'destroy') {
+          $.data(this, 'simplebar', null)
+        }
+      })
+
+      // If the earlier cached method
+      // gives a value back return the value,
+      // otherwise return this to preserve chainability.
+      return returns !== undefined ? returns : this
+    }
+  }
+
+  $.fn.simplebar.Constructor = SimpleBar
+
+  /**
+   * No conflict
+   */
+  $.fn.simplebar.noConflict = function () {
+    $.fn.simplebar = old
+    return this
+  }
+})
+
+$('.simplebar').simplebar()
+
+function active_position(id) {
+  let latLng = marker_list[id].getPosition()
+  $('.all_maps_post .posts_list').removeClass('current')
+  $('.all_maps_post .posts_list[data-post-id=' + id + ']').addClass('current')
+}
+
+$(document).on('click', '.tabs_button li a', function () {
+  $('.tabs_button li a,.tabs_item').removeClass('active')
+  $(this).addClass('active')
+  $($(this).attr('href')).addClass('active')
+  return false
+})
+$('.result_line').each(function () {
+  result($(this))
+})
+
+function result(item) {
+  const setting = item.attr('data-line-setting').split(',')
+  const min = parseFloat(setting[0])
+  const min_z = parseFloat(setting[1])
+  const max_z = parseFloat(setting[2])
+  const max = parseFloat(setting[3])
+  let val = parseFloat(item.attr('data-line-val'))
+  val = val < min ? min : val
+  val = val > max ? max : val
+  const from = 100 / (max - min)
+  const position_current = (val - min) * from
+  const min_z_w = (min_z - min) * from
+  const normal_w = (max_z - min_z) * from
+  const max_z_w = (max - max_z) * from
+  let str_val = item.attr('data-line-val')
+  let label
+  if (str_val.length > 5) {
+    label = "background-image: url('/static/images/result.svg'); width: 80px;"
+  } else {
+    label = "background-image: url('/static/images/result.png'); width: 40px;"
+  }
+
+  item.append(
+    '<span style="left: ' +
+      position_current +
+      '%;' +
+      label +
+      '"' +
+      'class="value">' +
+      item.attr('data-line-val') +
+      '</span>'
+  )
+  item.append('<span style="width: ' + min_z_w + '%" class="min"></span>')
+  item.append(
+    '<span style="width: ' +
+      normal_w +
+      '%" class="normal"><span class="min-z">' +
+      min_z +
+      '</span><span class="max-z">' +
+      max_z +
+      '</span></span>'
+  )
+  item.append('<span style="width: ' + max_z_w + '%;" class="max"></span>')
+}
+
+// $(document).ready(function () {
+//
+//
+//     $(document).on('change', '.all-list label.checkbox input', function () {
+//         if ($(this).prop("checked")) {
+//             let key = Date.now();
+//             $(this).parents('li').attr('data-remove', key);
+//             let text = $(this).parents('li').find('a[data-toggle="modal"]').text();
+//             let price = $(this).parents('li').find('.price').text();
+//             let append_text = '<li data-remove="' + key + '">\n' +
+//                 ' <label class="checkbox">\n' +
+//                 '    <span class="title">\n' +
+//                 '      <p class="name">' + text + '</p>\n' +
+//                 '      <p class="price">' + price + '</p>\n' +
+//                 '     </span>\n' +
+//                 '      <input type="checkbox" hidden="">\n' +
+//                 '    <span></span>\n' +
+//                 '  </label>\n' +
+//                 ' </li>';
+//             $('.cart-block .cart-list ul').append(append_text);
+//             $('.cart-block .cart-list ul li[data-remove="' + key + '"] input').prop('checked', true);
+//         }
+//         else {
+//             let key = $(this).parents('li').attr('data-remove');
+//             $('.cart-block .cart-list ul li[data-remove="' + key + '"]').remove();
+//         }
+//     });
+//
+//
+//     $(document).on('change', '.cart-block .cart-list ul li[data-remove] input', function () {
+//         if (!$(this).prop("checked")) {
+//             let key = $(this).parents('li[data-remove]').attr('data-remove');
+//
+//             $(this).parents('li[data-remove]').remove();
+//             $('.all-list li[data-remove=' + key + '] input').prop('checked', false);
+//         }
+//     });
+// });
+
+// graph js
+
+let ctx = document.getElementById('myChart')
+
+if (ctx) {
+  let parents_element = $('#myChart').parents('div')
+  let ctx_w = 300
+  let win_w = $(window).width()
+  if (win_w > 300) {
+    ctx_w = 250
+  }
+  if (win_w > 400) {
+    ctx_w = 350
+  }
+  if (win_w > 600) {
+    ctx_w = 550
+  }
+  if (win_w > 700) {
+    ctx_w = 650
+  }
+  if (win_w > 800) {
+    ctx_w = 750
+  }
+  if (win_w > 900) {
+    ctx_w = 850
+  }
+  if (win_w > 1000) {
+    ctx_w = 1000
+  }
+  if (win_w > 1090) {
+    ctx_w = 1098
+  }
+
+  ctx.width = ctx_w
+  ctx.height = parents_element.height()
+
+  ctx = ctx.getContext('2d')
+
+  let myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['01 Янв 2018', '06 Янв 2018', '02 Фев 2018'],
+      datasets: [
+        {
+          // label: '',
+          fill: false,
+          data: [120, 129, 145],
+          backgroundColor: ['rgb(3, 113, 196)'],
+          borderColor: ['rgb(3, 113, 196)'],
+          borderWidth: 2,
+        },
+      ],
+    },
+    options: {
+      responsive: false,
+      scales: {
+        yAxes: [
+          {
+            display: true,
+            scaleLabel: {
+              display: false,
+              labelString: 'Value',
+            },
+            ticks: {
+              min: 100,
+              max: 190,
+              stepSize: 30,
+            },
+          },
+        ],
+      },
+      elements: {
+        line: {
+          tension: 0, // disables bezier curves
+        },
+      },
+      legend: {
+        display: false,
+      },
+      layout: {
+        padding: {
+          left: 50,
+          right: 50,
+          top: 0,
+          bottom: 0,
+        },
+      },
+    },
+  })
+}
+$(document).ready(function () {
+  //Add this line (and it's closing line)
+  var currentDate = new Date()
+
+  $('.invivo-trigger-date-picker')
+    .datepicker({
+      dateFormat: 'yy-mm-dd',
+      maxDate: 0,
+      changeYear: true,
+    })
+    .attr('readonly', 'readonly')
+  $('.invivo-trigger-date-picker').datepicker('setDate', currentDate)
+})
+
+let bannerSwiper = new Swiper('.swiper-container-banner', {
+  autoplay: {
+    delay: 4e3,
+    disableOnInteraction: false,
+  },
+  breakpoints: {
+    320: {
+      autoplay: {
+        delay: 5e6,
+      },
+    },
+    470: {
+      autoplay: {
+        delay: 4e3,
+      },
+    },
+  },
+  effect: 'slide',
+  loop: true,
+  on: {
+    slideChangeTransitionEnd: function () {
+      if (
+        $('.swiper-slide-active .banner-slider__item').attr('data-img')
+          .length != 0
+      )
+        $('.banner-slider__bg').css(
+          'background',
+          'url("' +
+            $('.swiper-slide-active .banner-slider__item').attr('data-img') +
+            '") 50% center/cover'
+        )
+    },
+  },
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+  spaceBetween: 0,
+  speed: 1500
+})
+
+$('.popup__close').on('click', function () {
+  $('.analyzes').removeClass('open')
+})
+
+$(document).mouseup(function (e) {
+  if ($('.analyzes').has(e.target).length === 0) {
+    $('.analyzes').removeClass('open')
+  }
+})
+
+// Проверка на наличие симоволов в форме обратной связи на странице Франшизы!
+$('.franchise__form-btn').on('click', function () {
+  if (!id_name.value) {
+    $('#id_name').css('box-shadow', '0px 0px 3px 0px rgb(255 0 0 / 75%)')
+  } else {
+    $('#id_name').css('box-shadow', '0px 0px 3px 0px rgb(0 0 0 / 25%)')
+  }
+
+  if (!id_city.value) {
+    $('#id_city').css('box-shadow', '0px 0px 3px 0px rgb(255 0 0 / 75%)')
+  } else {
+    $('#id_city').css('box-shadow', '0px 0px 3px 0px rgb(0 0 0 / 25%)')
+  }
+
+  if (!id_phone.value) {
+    $('#id_phone').css('box-shadow', '0px 0px 3px 0px rgb(255 0 0 / 75%)')
+  } else {
+    $('#id_phone').css('box-shadow', '0px 0px 3px 0px rgb(0 0 0 / 25%)')
+  }
+
+  if (id_name.value && id_city.value && id_phone.value) {
+    if ($('#js-helper').attr('data-language-code') === 'ru') {
+      Swal.fire(
+        'Форма отправлена!',
+        'В ближайшее время мы с Вами свяжемся для уточнения деталей',
+        'success'
+      )
+    } else {
+      Swal.fire(
+        'Форма відправлена!',
+        "Найближчим часом ми з Вами зв'яжемося для уточнення деталей",
+        'success'
+      )
+    }
+  } else {
+    if ($('#js-helper').attr('data-language-code') === 'ru') {
+      Swal.fire({
+        icon: 'error',
+        text: `Заполните все обязательные поля!`,
+      })
+    } else {
+      Swal.fire({
+        icon: 'error',
+        text: `Заповніть всі обов'язкові поля!`,
+      })
+    }
+  }
+})
+if (window.innerWidth <= 442) {
+  const resultBtn = document.querySelector('.results-btn')
+  const covidBtn = document.querySelector('.covid-btn')
+  const confirmCityBtn = document.querySelector('.close-city-popup')
+  resultBtn.textContent = 'Результаты'
+  covidBtn.textContent = 'COVID'
+  confirmCityBtn.textContent = 'Верно'
+}
+
+//Установка верного формата на календари
+function ValidationDatePickers() {
+  var today = new Date()
+  var dd = today.getDate()
+  var mm = today.getMonth() + 1 //January is 0!
+  var yyyy = today.getFullYear()
+  if (dd < 10) {
+    dd = '0' + dd
+  }
+  if (mm < 10) {
+    mm = '0' + mm
+  }
+  today = yyyy + '-' + mm + '-' + dd
+  document.getElementById('id_birth_date_signin').setAttribute('max', today)
+  document.getElementById('id_birth_date_edit').setAttribute('max', today)
+}
+
+ValidationDatePickers()
+
+function ChangeHeaderButtonsPosInMobile() {
+  if (window.innerWidth <= 1024) {
+    if (window.location.href.includes('/covid/') === true) {
+      $('.header__mid .col-md-4').css('flex-direction', 'row-reverse')
+      const HeaderMidCovidBtn = document.querySelector('.covid-btn')
+      HeaderMidCovidBtn.setAttribute('href', `/ru/`)
+      HeaderMidCovidBtn.textContent = 'Главная'
+    }
+    if (
+      window.location.href.split('/').length > 6 &&
+      window.location.href.includes('/covid/') === false
+    ) {
+      const HeaderMidFranchiseBtn = document.querySelector('.franchise-btn')
+      HeaderMidFranchiseBtn.setAttribute('href', `/ru/`)
+      HeaderMidFranchiseBtn.textContent = 'Главная'
+    }
+  }
+}
+
+ChangeHeaderButtonsPosInMobile()
+
+function SocialMediaBlockAnimate() {
+  let SocialMediaBlock = document.querySelector('.social__block')
+  let HexAfter = document.querySelector('.hex.after')
+  let HexBefore = document.querySelector('.hex.before')
+  let SocialHexagon = document.querySelector('.social__hexagon')
+  if (SocialMediaBlock) {
+    SocialMediaBlock.addEventListener('mouseover', function () {
+      HexAfter.classList.add('hovered')
+      HexBefore.classList.add('hovered')
+      SocialHexagon.classList.add('hovered')
+    })
+    SocialMediaBlock.addEventListener('mouseout', function () {
+      HexAfter.classList.remove('hovered')
+      HexBefore.classList.remove('hovered')
+      SocialHexagon.classList.remove('hovered')
+    })
+  }
+}
+
+SocialMediaBlockAnimate()
+
+function initIndividualLikarSwiper() {
+  if (
+    document
+      .querySelector('#likar__rate-individual')
+      .classList.value.includes('active') !== true
+  ) {
+    document.getElementById('nav-family').classList.remove('tab-pane')
+  } else {
+    document.getElementById('nav-family').classList.add('tab-pane')
+  }
+  let SwiperBtns = document.querySelector('.likar__rate-swiper-btns.individual')
+  if (
+    window.innerWidth < 1199 &&
+    Array.from(document.querySelectorAll('.likar__rate-card.individual'))
+      .length > 1
+  ) {
+    let IndividualSwiper = new Swiper('.likar__rate-individual-swiper', {
+      loop: true,
+      slidesPerView: 1,
+      spaceBetween: 30,
+      navigation: {
+        nextEl: '.likar__rate-swiper-next',
+        prevEl: '.likar__rate-swiper-prev',
+      },
+    })
+    SwiperBtns.style.display = 'flex'
+  } else {
+    SwiperBtns.style.display = 'none'
+  }
+}
+
+if (window.location.href.includes('/likar-online/') === true) {
+  initIndividualLikarSwiper()
+}
+
+$('#likar__rate-individual').on('click', function () {
+  initIndividualLikarSwiper()
+})
+
+function initFamilyLikarSwiper() {
+  if (
+    document
+      .querySelector('#likar__rate-individual')
+      .classList.value.includes('active') !== true
+  ) {
+    document.getElementById('nav-family').classList.remove('tab-pane')
+  } else {
+    document.getElementById('nav-family').classList.add('tab-pane')
+  }
+  let SwiperBtns = document.querySelector('.likar__rate-swiper-btns.family')
+  if (
+    window.innerWidth < 1199 &&
+    Array.from(document.querySelectorAll('.likar__rate-card.family')).length > 1
+  ) {
+    let FamilySwiper = new Swiper('#likar__rate-family-swiper', {
+      loop: true,
+      slidesPerView: 1,
+      spaceBetween: 30,
+      navigation: {
+        nextEl: '.likar__rate-family-swiper-next',
+        prevEl: '.likar__rate-family-swiper-prev',
+      },
+    })
+    SwiperBtns.style.display = 'flex'
+  } else {
+    SwiperBtns.style.display = 'none'
+  }
+}
+
+$('#likar__rate-family').on('click', function () {
+  initFamilyLikarSwiper()
+})
