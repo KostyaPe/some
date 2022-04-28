@@ -1,24 +1,4 @@
-<?php
-//v5
 
-session_start();
-$_SESSION["pixel_id"] = $_GET['pixel_id'] ?? '';
-$_SESSION["utm_source"] = $_GET['utm_source'] ?? '';
-$_SESSION["aff_click_id"] = $_GET['aff_click_id'] ?? '';
-$_SESSION["sub1"] = $_GET['sub1'] ?? '';
-$_SESSION["custom1"] = $_GET['custom1'] ?? '';
-$_SESSION["sub_id2"] = $_GET['sub_id2'] ?? '';
-$_SESSION["sub_id3"] = $_GET['sub_id3'] ?? '';
-$_SESSION["sub_id4"] = $_GET['sub_id4'] ?? '';
-$_SESSION["sub_id5"] = $_GET['sub_id5'] ?? '';
-$_SESSION["aff_param1"] = $_GET['aff_param1'] ?? '';
-$_SESSION["aff_param2"] = $_GET['aff_param2'] ?? '';
-$_SESSION["aff_param3"] = $_GET['aff_param3'] ?? '';
-$_SESSION["aff_param4"] = $_GET['aff_param4'] ?? '';
-$_SESSION["aff_param5"] = $_GET['aff_param5'] ?? '';
-
-
-?>
 
 <!DOCTYPE html>
 <html>
@@ -707,22 +687,7 @@ $_SESSION["aff_param5"] = $_GET['aff_param5'] ?? '';
                         <input type="text" name="phone" minlength="6" maxlength="20" class="text-field-4 w-input"
                             data-name="phone" autocomplete="tel" required="">
                         <input type="submit" value="PESAN SEKARANG" class="submit-button w-button">
-                        <input type="hidden" name="aff_click_id" value="{subid}" />
-                        <input type="hidden" name="sub1" value="<?php echo $_SESSION["sub1"]; ?>">
-										<input type="hidden" name="pixel_id" value="">
-										<input type="hidden" name="custom1" value="<?php echo $_SESSION["custom1"]; ?>">
-										<input type="hidden" name="sub_id2" value="<?php echo $_SESSION["sub_id2"]; ?>">
-										<input type="hidden" name="sub_id3" value="<?php echo $_SESSION["sub_id3"]; ?>">
-										<input type="hidden" name="sub_id4" value="<?php echo $_SESSION["sub_id4"]; ?>">
-										<input type="hidden" name="sub_id5" value="<?php echo $_SESSION["sub_id5"]; ?>">
-										<input type="hidden" name="aff_param1" value="<?php echo $_SESSION["aff_param1"]; ?>">
-										<input type="hidden" name="aff_param2" value="<?php echo $_SESSION["aff_param2"]; ?>">
-										<input type="hidden" name="aff_param3" value="<?php echo $_SESSION["aff_param3"]; ?>">
-										<input type="hidden" name="aff_param4" value="<?php echo $_SESSION["aff_param4"]; ?>">
-										<input type="hidden" name="aff_param5" value="<?php echo $_SESSION["aff_param5"]; ?>">
-										                <script>
-                  document.querySelector('input[name="pixel_id"]').setAttribute("value", new URLSearchParams(window.location.search).get("pixel_id"))
-                </script>
+
                     </form>
                 </div>
                 <div class="text-block-23">* Informasi anda akan dirahasiakan. Anda hanya membayar ketika Anda menerima
